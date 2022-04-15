@@ -1,6 +1,6 @@
-from update import Update
+from modify import Modify
 
-class Transform(Update):
+class Transform(Modify):
     def __init__(self) -> None:
         path_in_datagit = 'string'
         isMap = 'int'
