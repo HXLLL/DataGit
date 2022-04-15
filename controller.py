@@ -1,4 +1,5 @@
 import storage
+from version import Version
 
 
 def init() -> None:
@@ -32,41 +33,60 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str = ".") ->
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    stage.transform(dir1, entry, is_map, dir2)
+
     storage.save_repo(repo)
     storage.save_stage(stage)
 
 
 def commit(msg: str) -> None:
-    pass
+    repo = storage.load_repo()
+    stage = storage.load_stage()
+
+    repo.commit(stage, msg)
+    stage = Version() # create a new stage
+
+    storage.save_repo(repo)
+    storage.save_stage(stage)
 
 
 def checkout(obj: str) -> None:
-    pass
+    repo = storage.load_repo()
+    stage = storage.load_stage()
+
+    repo.checkout(obj)
+
+    storage.save_repo(repo)
+    storage.save_stage(stage)
 
 
 def save(obj: str) -> None:
     # load metadata
+    repo.save(obj)
     # save metadata
-    pass
 
 
 def unsave(obj: str) -> None:
     # load metadata
+    repo.unsave(obj)
     # save metadata
-    pass
 
 
 def adjust() -> None:
-    pass
+    repo.adjust()
 
 
 def log() -> str:
-    pass
+    # get repo.log()
+    # process
+    return ''
 
 
 def status() -> str:
-    pass
+    # get stage.status()
+    # process
+    return ''
 
 
 def branch(name: str) -> str:
-    pass
+    # repo.branch()
