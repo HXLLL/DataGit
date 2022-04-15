@@ -7,3 +7,6 @@ class Modify(ABC):
     @abstractmethod
     def apply(self):
         pass
+
+    def apply(self, workingDir):
+        pass
