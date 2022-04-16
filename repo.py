@@ -54,8 +54,9 @@ class Repo:
         storage.update_workingdir(src_version, working_dir) #以存储版本的复原
 
         modify_sequence = []
+        # !!! assume every version only have one modify
         for v in route:
-            modify_sequence += v.get_modify_sequence()
+            modify_sequence += [v.get_modify()]
         
         for m in modify_sequence:
             m.apply(working_dir)
@@ -73,8 +74,9 @@ class Repo:
         storage.update_workingdir(src_version, tmp_dir) #在某个位置将版本变换出来
 
         modify_sequence = []
+        # !!! assume every version only have one modify
         for v in route:
-            modify_sequence += v.modify_sequence()
+            modify_sequence += [v.get_modify()]
 
         for m in modify_sequence:
             m.apply(tmp_dir)
