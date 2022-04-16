@@ -6,8 +6,15 @@ import storage
 from file_info import File_info
 
 
-class Version:
+class Version():
     def __init__(self):
+        self.modify_sequence = []
+
+    
+
+class Stage(Version):
+    def __init__(self):
+        super(Stage, self).__init__()
         self.modify_sequence = []
 
     # 仅stage调用
@@ -32,8 +39,7 @@ class Version:
         m = Transform(dir_in_datagit, dir1, entry, isMap, dir2)
         self.modify_sequence.append(m)
 
-        m.apply();
+        m.apply()
 
     def status(self):
         pass
-    
