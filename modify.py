@@ -5,8 +5,8 @@ class Modify(ABC):
         self.description = "error: this should not be printed"
     
     @abstractmethod
-    def apply(self):
-        pass
-
-    def apply(self, workingDir):
+    def apply(self, work_path: str):
+        '''
+        应用update或transform到work_path目录
+        '''
         pass

@@ -1,6 +1,4 @@
-
-class File_info:
+class Blob:
     def __init__(self) -> None:
-        path_in_datagit = 'string'
-        file_origin_path = 'string'
-        pass
+        self.name = 'null'  # 文件名称
+        self.hash = 'null'  # 文件哈希值
