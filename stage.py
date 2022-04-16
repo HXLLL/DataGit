@@ -19,16 +19,9 @@ class Stage():
         pass
 
     def update(self, dir: str) -> None:
-        m = Update()
-        add_list_bypath, del_list_bypath = scan_different_files()
-        for add_file in m.add_list:
-            path_in_datagit = storage.save_file(add_file)
-            
-            m.add_list.append( File_info(path_in_datagit, add_file) ) # type: list[file_info]
-            
-        self.modify_sequence.append(m)
-        for File_name in m.file_sequence:
-            storage.savefile(File_name)
+        add_list, del_list = self.__scan_update()
+        upd = Update(add_list, del_list)
+        pass  # 还要做的事：把增加的文件利用storage.save_file方法实际保存下来。
     
     
     def transform(self, dir1, entry, isMap, dir2):
