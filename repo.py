@@ -2,32 +2,30 @@ from email.header import Header
 import storage
 from version import Version
 
+class TreeNode:
+    def __init__(self, version: Version):
+        self.version = version
+
 class Repo:
     def __init__(self) -> None:
-        Tree = []
-        saved_version = []
-        Head = []
-        branch_map = {'BranchName':'ID'}
-        version_map = {'ID':'TreeNode'}
-        versino_message = {'ID':'String'}
-        pass
+        self.Tree = []
+        self.saved_version = []
+        self.Head = []
+        self.branch_map = {'BranchName':'ID'}
+        self.version_map = {'ID':'TreeNode'}
+        self.versino_message = {'ID':'String'}
 
-# ------------------ commit ---------------
-    def save_version(self, Stage) -> TreeNode:
-        pass
-
-    def save_version_message(self, TreeNode, message) -> None:
-        pass
+    # ------------------ commit ---------------
+    def save_version(self, Stage, message) -> TreeNode:
+        version = Version(Stage, message)
+        return TreeNode(version)
 
     def commit(self, Stage, message) -> None:
         TreeNode = self.save_version(Stage)
-        self.save_version_message(TreeNode, message)
-
+        self.Tree.append(TreeNode)
         Head = TreeNode
-        
-        
     
-# ------------------ checkout ---------------
+    # ------------------ checkout ---------------
     def find_saved_dataSet(self, destVersionID) -> int: #VersionID
         pass
 
@@ -45,7 +43,7 @@ class Repo:
         
         Head = "destVersion"
 
-# ------------------ save ---------------
+    # ------------------ save ---------------
     def save(self, VersionID) -> None:
         srcVersionID = self.find_saved_dataSet(VersionID)
         storage.update_workingdir(srcVersionID, working_dir) #在某个位置将版本变换出来
