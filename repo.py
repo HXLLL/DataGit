@@ -1,13 +1,13 @@
 from email.header import Header
-from typing import Tuple
+from typing import Tuple, List
 import storage
 from version import Version, Stage
 
 
 class Repo:
     def __init__(self) -> None:
-        self.versions: list[Version] = []
-        self.saved_version: list[str] = []
+        self.versions: List[Version] = []
+        self.saved_version: List[str] = []
         self.HEAD: Version = None
         self.branch_map: dict[str, str] = {}  # map branch name to version id
         self.version_map: dict[str, Version] = {}  # map hash to version
@@ -26,7 +26,7 @@ class Repo:
         HEAD = v
     
     # ------------------ checkout ---------------
-    def __find_saved_dataSet(self, dest_version) -> Tuple[Version, list[Version]]:
+    def __find_saved_dataSet(self, dest_version) -> Tuple[Version, List[Version]]:
         """
         given a version *dest*, find the nearest saved version in *dest*'s ancestors,
         return that ancestor and the route from that ancestor to *dest*
@@ -96,7 +96,7 @@ class Repo:
         self.saved_version.delete(VersionID)
 
     # ------------------ adjust ---------------
-    def find_suitable_versions(self) -> list[Version]:
+    def find_suitable_versions(self) -> List[Version]:
         pass
 
     def adjust(self) -> None:
