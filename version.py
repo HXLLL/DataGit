@@ -8,16 +8,23 @@ from stage import Stage
 
 
 class Version():
-    def __init__(self, stage: Stage, message: str, parent: 'Version') -> None:
-        '''
-        功能:复制一个stage,并添加commit信息,构造完的Version会被直接挂到提交树上
-        '''
-        self.__modify_sequence = stage.get_modify_sequence()
+    def __init__(self, parent: 'Version', modify: Modify, message: str) -> None:
+        self.__parent = parent
+        self.__modify = modify
         self.__message = message
-        self.__parent = stage.get_parent()
 
-    def calc_hash() -> str:
+
+    def calc_hash(self) -> str:
         '''
         功能:计算Version的哈希值
         '''
         pass
+    
+    def get_parent(self) -> 'Version':
+        return self.__parent
+    
+    def get_modify(self) -> Modify:
+        return self.__modify
+
+    def get_message(self) -> str:
+        return self.__message

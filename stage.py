@@ -21,15 +21,18 @@ class Stage():
     def update(self, dir: str) -> None:
         add_list, del_list = self.__scan_update()
         upd = Update(add_list, del_list)
-        pass  # 还要做的事：把增加的文件利用storage.save_file方法实际保存下来。
-    
+        # 还没写完
     
     def transform(self, dir1, entry, isMap, dir2):
+        # 这里是之前写的伪代码，还没改
         dir_in_datagit = storage.save_transform(dir1, entry, isMap, dir2) # type: string
         m = Transform(dir_in_datagit, dir1, entry, isMap, dir2)
         self.modify_sequence.append(m)
 
         m.apply()
+    
+    def commit(self, message: str) -> Version:
+        pass
 
     def status(self):
         pass
