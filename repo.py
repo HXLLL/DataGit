@@ -8,10 +8,13 @@ from typing import List
 class Repo:
     def __init__(self) -> None:
         self.versions: List[Version] = []
-        self.saved_version: List[str] = []
+        self.saved_version: List[int] = []
         self.HEAD: Version = None
         self.branch_map: dict[str, str] = {}  # map branch name to version id
-        self.version_map: dict[str, Version] = {}  # map hash to version
+        self.version_map: dict[int, Version] = {}  # map hash to version
+
+    def init(self) -> None:
+        storage.create_repo()
 
     # TODO: consider multi branch
     def commit(self, stage: Stage, message: str) -> None:
@@ -42,7 +45,7 @@ class Repo:
         return v, route
 
     # TODO: support checkout to a branch
-    def checkout(self, VersionID: str, to_branch: bool) -> None: # op指示VersionID or branch_name
+    def checkout(self, VersionID: int, to_branch: bool) -> None: # op指示VersionID or branch_name
         """
         # currently not supporting checking out to a branch
         given a version ID, replace contents of the working dir with files of that branch
@@ -65,7 +68,7 @@ class Repo:
         self.HEAD = dest_version
 
     # ------------------ save -----------------
-    def save(self, VersionID) -> None:
+    def save(self, VersionID: int) -> None:
         """
         save a version.
         """
@@ -87,7 +90,7 @@ class Repo:
         self.saved_version.append(VersionID) 
 
     # ------------------ unsave ---------------
-    def unsave(self, VersionID) -> None:
+    def unsave(self, VersionID: int) -> None:
         """
         unsave a version.
         """
