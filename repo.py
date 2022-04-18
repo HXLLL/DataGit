@@ -2,6 +2,7 @@ from email.header import Header
 from typing import Tuple, List
 import storage
 from version import Version, Stage
+from typing import List
 
 
 class Repo:

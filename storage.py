@@ -1,4 +1,4 @@
-from file_info import File_info
+from blob import File_info
 from repo import Repo
 from version import Version
 
@@ -26,6 +26,9 @@ class Storage:
 
     def save_file(file_name: str) -> File_info:
         pass
-
+    
+    # 功能：返回当前工作区的根目录
+    def get_root_path() -> str:
+        pass
 
 storage = Storage()
