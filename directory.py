@@ -3,9 +3,9 @@ from typing import List, Tuple
 import os
 
 class Directory():
-    def __init__(self) -> None:
+    def __init__(self, name) -> None:
+        self.name = name   # 文件夹名称（不是路径）
         self.file_list = []  # 元素类型可能是Directory或Blob
-        self.name = 'null'   # 文件夹名称（不是路径）
 
     def unfold(self, root_path: str) -> List[Tuple[str, Blob]]:
         '''
