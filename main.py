@@ -52,7 +52,11 @@ def func_adjust(args: argparse.Namespace) -> None:
 
 
 def func_log(args: argparse.Namespace) -> None:
-    controller.log()
+    print(controller.log())
+
+
+def func_status(args: argparse.Namespace) -> None:
+    print(controller.status())
 
 
 def func_branch(args: argparse.Namespace):
@@ -88,16 +92,16 @@ def main():
     parser_commit.set_defaults(func=func_commit)
 
     parser_checkout = subparsers.add_parser('checkout', help='checkout the dataset')
-    parser_checkout.add_argument('-v', type=str, help='checkout dataset of the version ID')
+    parser_checkout.add_argument('-v', type=int, help='checkout dataset of the version ID')
     parser_checkout.add_argument('-b', type=str, help='checkout dataset on the branch')
     parser_checkout.set_defaults(func=func_checkout)
 
     parser_save = subparsers.add_parser('save', help='save the dataset')
-    parser_save.add_argument('-v', type=str, required=True, help='save dataset of the version ID')
+    parser_save.add_argument('-v', type=int, required=True, help='save dataset of the version ID')
     parser_save.set_defaults(func=func_save)
 
     parser_unsave = subparsers.add_parser('unsave', help='unsave the dataset')
-    parser_unsave.add_argument('-v', type=str, required=True, help='unsave dataset of the version ID')
+    parser_unsave.add_argument('-v', type=int, required=True, help='unsave dataset of the version ID')
     parser_unsave.set_defaults(func=func_unsave)
 
     parser_adjust = subparsers.add_parser('adjust', help='adjust the storage of dataset')
@@ -105,6 +109,9 @@ def main():
 
     parser_log = subparsers.add_parser('log', help='print the log')
     parser_log.set_defaults(func=func_log)
+
+    parser_log = subparsers.add_parser('status', help='print the status')
+    parser_log.set_defaults(func=func_status)
 
     parser_branch = subparsers.add_parser('branch', help='create a new branch')
     parser_branch.add_argument('name', type=str, help='name of the branch')
