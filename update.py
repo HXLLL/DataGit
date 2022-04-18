@@ -20,6 +20,9 @@ class Update(Modify):
             
     
     def apply(self, working_dir):
+        '''
+        将Update对应文件增删应用到working_dir目录下
+        '''
         for item in self.__add_list:
             Files = item.unfold(working_dir)
             for atuple in Files:
@@ -33,6 +36,6 @@ class Update(Modify):
         for item in self.__del_list:
             path = os.path.join(working_dir, item)
             if os.path.isdir(path):
-                os.rmdir(path)
+                shutil.rmtree(path)
             else:
                 os.remove(path)
