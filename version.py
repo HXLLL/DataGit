@@ -5,10 +5,13 @@ from update import Update
 from storage import storage
 from blob import File_info
 from stage import Stage
+from typing import List
 
 
 class Version():
-    def __init__(self, parent: 'Version', modify: Modify, message: str) -> None:
+    def __init__(self, id: int, parent: 'Version', modify_sequence: List[Modify], 
+                 message: str) -> None:
+        self.id = id
         self.parent = parent
-        self.modify = modify
+        self.modify_sequence = modify_sequence
         self.message = message
