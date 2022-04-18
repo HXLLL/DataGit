@@ -3,7 +3,7 @@ from modify import Modify
 from transform import Transform
 from update import Update
 from storage import storage
-from blob import File_info
+from blob import Blob
 from version import Version
 from typing import Tuple
 
@@ -15,6 +15,7 @@ class Stage():
         '''
         返回改动的add_list和remove_list
         两个list的元素都是元组(path:str,file:Directory/Blob)
+        path是从工作区的根目录开始的
         ''' 
         pass
 
@@ -22,6 +23,9 @@ class Stage():
         add_list, del_list = self.__scan_update()
         upd = Update(add_list, del_list)
         # 还没写完
+    
+    def add(self, src_path: str, dst_path: str):
+        pass
     
     def transform(self, dir1, entry, isMap, dir2):
         # 这里是之前写的伪代码，还没改

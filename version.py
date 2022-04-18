@@ -12,13 +12,6 @@ class Version():
         self.__parent = parent
         self.__modify = modify
         self.__message = message
-
-
-    def calc_hash(self) -> str:
-        '''
-        功能:计算Version的哈希值
-        '''
-        pass
     
     def get_parent(self) -> 'Version':
         return self.__parent
