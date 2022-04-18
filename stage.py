@@ -11,7 +11,7 @@ class Stage():
     def __init__(self):
         self.__modify_sequence = []
 
-    def __scan_update() -> Tuple[list, list]:
+    def __scan_update(self) -> Tuple[list, list]:
         '''
         返回改动的add_list和remove_list
         两个list的元素都是元组(path:str,file:Directory/Blob)

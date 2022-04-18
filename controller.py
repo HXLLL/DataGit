@@ -1,9 +1,15 @@
 import storage
+from repo import Repo
+from stage import Stage
 from version import Version
 
 
 def init() -> None:
-    pass
+    repo = Repo()
+    stage = Stage()
+
+    storage.save_repo(repo)
+    storage.save_stage(stage)
 
 
 def update(dir: str) -> None:
@@ -11,25 +17,23 @@ def update(dir: str) -> None:
     stage = storage.load_stage()
 
     # get all file's hash values from stage
-    stage.add_update(dir)
-    for m in stage.modify_sequence:
-        m.apply()
+    stage.update(dir)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
 
 
-def update_add(src: str, dst: str) -> None:
+def add(src: str, dst: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    # TODO 
+    stage.add(dir)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
 
 
-def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str = ".") -> None:
+def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
@@ -50,7 +54,16 @@ def commit(msg: str) -> None:
     storage.save_stage(stage)
 
 
-def checkout(obj: str) -> None:
+def checkout_v(obj: str) -> None:
+    repo = storage.load_repo()
+    stage = storage.load_stage()
+
+    repo.checkout(obj)
+
+    storage.save_repo(repo)
+    storage.save_stage(stage)
+
+def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
