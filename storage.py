@@ -1,6 +1,9 @@
 import os
 from repo import Repo
 from version import Version
+from stage import Stage
+import utils
+import pickle
 
 class Storage:
     def __init__(self):
@@ -18,16 +21,36 @@ class Storage:
         pass
 
     def load_repo(self) -> Repo:
-        return Repo()
+        """
+        load repo from .datagit/repo
+        """
+        repo_path = os.path.join(self.get_working_dir(), '.datagit', 'repo', 'repo.pk')
+        with open(repo_path, 'wb') as repo_file:
+            return pickle.load(repo_file)
 
-    def load_stage(self) -> Version:
-        return Version()
+    def load_stage(self) -> Stage:
+        """
+        load stage from .datagit/repo
+        """
+        stage_path = os.path.join(self.get_working_dir(), '.datagit', 'stage', 'stage.pk')
+        with open(stage_path, 'wb') as stage_file:
+            return pickle.load(stage_file)
 
     def save_repo(self, repo: Repo) -> None:
-        pass
+        """
+        save repo to .datagit/repo
+        """
+        repo_path = os.path.join(self.get_working_dir(), '.datagit', 'repo', 'repo.pk')
+        with open(repo_path, 'wb') as repo_file:
+            pickle.dump(repo, repo_file)
 
-    def save_stage(self, stage: Version) -> None:
-        pass
+    def save_stage(self, stage: Stage) -> None:
+        """
+        save stage to .datagit/stage
+        """
+        stage_path = os.path.join(self.get_working_dir(), '.datagit', 'stage', 'stage.pk')
+        with open(stage_path, 'wb') as stage_file:
+            pickle.dump(stage, stage_file)
 
     def save_file(self, file_name: str) -> File_info:
         pass
