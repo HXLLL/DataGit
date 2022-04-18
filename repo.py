@@ -54,7 +54,6 @@ class Repo:
         storage.update_workingdir(src_version, working_dir) #以存储版本的复原
 
         modify_sequence = []
-        # !!! assume every version only have one modify
         for v in route:
             modify_sequence += [v.get_modify()]
         
