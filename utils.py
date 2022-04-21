@@ -7,6 +7,22 @@ class Utils:
     def __init__(self):
         pass
 
+    def get_working_dir(self) -> str:
+        """
+        get working directory's root
+        return -- absolute dir of working dir's root
+        """
+
+        d = os.getcwd()
+        while d != "/":
+            if os.path.isdir(os.path.join(d, ".datagit")):
+                break
+
+        if d != "/":
+            return d
+        else:
+            return None
+
 
     def get_hash(self, file:str) -> str:
         f = open(file, 'rb')
