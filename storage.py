@@ -171,6 +171,7 @@ class Storage:
 
     def delete_version(self, versionID: int) -> None:
         # TODO: actually remove saved files
+        pass
         
     
     # 功能：返回当前工作区的根目录

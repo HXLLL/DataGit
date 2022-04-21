@@ -1,6 +1,7 @@
 from blob import Blob
 from typing import List, Tuple, Union, Dict
 import os
+import utils
 
 class Directory():
     def __init__(self, name: str = '') -> None:
@@ -59,6 +60,7 @@ class Directory():
         self.build_dict(working_dir)
         for item in self.__files:
             item.construct(os.path.join(working_dir, item))
+<<<<<<< HEAD
     
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''
@@ -103,3 +105,10 @@ class Directory():
         
         return add_list, remove_list
     
+=======
+
+tmp = Directory('xx')
+tmp.construct(utils.get_working_dir())
+print(tmp.files)
+print("aaa")
+>>>>>>> Jyc_tmp
