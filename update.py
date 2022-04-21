@@ -1,5 +1,5 @@
 from modify import Modify
-import storage
+from storage import storage
 import os
 import shutil
 

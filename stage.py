@@ -108,16 +108,22 @@ class Stage():
         self.update(dst)
 
     
-    def transform(self, dir1, entry, isMap, dir2):
-        # 这里是之前写的伪代码，还没改
-        dir_in_datagit = storage.save_transform(dir1, entry, isMap, dir2) # type: string
-        m = Transform(dir_in_datagit, dir1, entry, isMap, dir2)
-        self.modify_sequence.append(m)
+    def transform(self, dir1: str, entry: str, isMap: int, dir2: str, message: str):
+        '''
+        新建一个Transform实例,添加到modify_sequnece中,并应用到工作目录
+        '''
 
-        m.apply()
+        m = Transform(isMap, dir1, entry, dir2, message)
+        self.__modify_sequence.append(m)
+
+        m.apply(storage.get_working_dir())
     
-    def commit(self, id: int, message: str) -> Version:
-        pass
+    def commit(self,parentID: int, id: int, message: str) -> Version:
+        '''
+        新建并返回一个Version实例
+        '''
+        new_version = Version(parentID, id, self.__modify_sequence, message)
+        return new_version
 
     def status(self):
         pass
