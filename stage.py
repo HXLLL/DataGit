@@ -3,8 +3,6 @@ from modify import Modify
 from directory import Directory
 from transform import Transform
 from update import Update
-from storage import storage
-from blob import Blob
 from version import Version
 from typing import Tuple
 import os
@@ -14,7 +12,7 @@ import shutil
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
-        self.root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
+        self.root_dir: str = utils.get_working_dir()  # 这需要storage比Stage先初始化
         self.dir_tree: Directory = Directory()
         self.dir_tree.construct(self.root_dir)
 
@@ -137,7 +135,7 @@ class Stage():
         m = Transform(isMap, dir1, entry, dir2, message)
         self.__modify_sequence.append(m)
 
-        m.apply(storage.get_working_dir())
+        m.apply(utils.get_working_dir())
     
     def commit(self,parentID: int, id: int, message: str) -> Version:
         '''

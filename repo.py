@@ -1,7 +1,8 @@
 from email.header import Header
 from typing import Tuple, List, Union, Dict
 import storage
-from version import Version, Stage
+from version import Version
+from stage import Stage
 from typing import List
 
 
