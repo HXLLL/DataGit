@@ -17,14 +17,6 @@ class Stage():
         self.root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
         self.dir_tree: Directory = Directory()
         self.dir_tree.construct(self.root_dir)
-    
-    def __get_update_list(self, cur_path: str, old_tree: Directory, 
-                          new_tree: Directory) -> Tuple[list, list]:
-        '''
-        功能:生成new_tree相比old_tree的add_list和remove_list
-            这两个文件夹在相对目录cur_path中
-        '''
-        
 
     def __scan_update(self, dir: str) -> Tuple[list, list]:
         '''
@@ -50,7 +42,6 @@ class Stage():
             del dirs[0]
         
         u = self.dir_tree
-        u_fa = None
         cur_path = '.'
         stop = -1
         for i, dirname in enumerate(dirs):
@@ -58,7 +49,7 @@ class Stage():
             if not v:
                 stop = i
                 break
-            u_fa, u = u, v
+            u = v
             cur_path = os.path.join(cur_path, dirname)
         
         add_list = []
@@ -69,7 +60,7 @@ class Stage():
             此时cur_path是到dir的相对路径
             u是self.dir_tree的子孙结点,是dir的目录树
             '''
-            add_list, remove_list = self.__get_update_list(cur_path, u, new_dir_tree)
+            add_list, remove_list = new_dir_tree.get_update_list(u, cur_path)
             u.copy(new_dir_tree)
         elif stop == len(dirs) - 1:
             '''
@@ -77,7 +68,7 @@ class Stage():
             此时cur_path是到dir上一级目录的相对路径
             u是self.dir_tree的子孙结点,是dir的上一级目录的目录树
             '''
-            u.files[new_dir_tree.name] = new_dir_tree
+            u.set_dir(new_dir_tree)
             add_list = [(cur_path, new_dir_tree)]
         else:
             '''
@@ -87,10 +78,10 @@ class Stage():
             v = fa_dir_tree
             for dirname in dirs[stop+1:-1]:
                 w = Directory(dirname)
-                v.files['dirname'] = w
+                v.set_dir(w)
                 v = w
             # v现在是dir的上级目录的目录树
-            v.files[new_dir_tree.name] = new_dir_tree
+            v.set_dir(new_dir_tree)
             add_list = [(cur_path, fa_dir_tree)]
         
         return add_list, remove_list
@@ -106,7 +97,6 @@ class Stage():
         add_list, del_list = self.__scan_update(dir)
         upd = Update(add_list, del_list)
         self.__modify_sequence.append(upd)
-        # todo:还要更新工作区状态
     
     def add(self, src: str, dst: str) -> None:
         '''
