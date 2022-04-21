@@ -15,13 +15,20 @@ class Directory():
         return [file.unfold(os.path.join(root_path, self.name)) 
                 for file in self.files.values()]
     
-    def enter(self, filename) -> Union['Directory', Blob, None]:
+    def enter(self, filename: str) -> Union['Directory', Blob, None]:
         '''
         功能:返回名字为filename的子目录或者子文件
         返回值:存在则返回Directory或Blob,不存在则返回None
         '''
         return self.files[filename] if filename in self.files.keys() else None
-
+      
+    def copy(self, new_dir):
+        '''
+        功能:复制new_dir的信息到self。用于就地更新目录树的某个节点而不改变父子关系。
+        '''
+        assert(self.name == new_dir.name)  # 如果名字变了，父亲就找不到self。
+        self.files = new_dir.files
+        
     def build_dict(self, working_dir: str) -> None:
         for item in os.listdir(working_dir):
             abs_path = os.path.join(working_dir, item)
