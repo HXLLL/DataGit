@@ -15,10 +15,18 @@ class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
         self.root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
-        self.dir_tree: Directory = None
-        self.__sync_dir_tree(self.root_dir)
+        self.dir_tree: Directory = Directory()
+        self.dir_tree.construct(self.root_dir)
+    
+    def __get_update_list(self, cur_path: str, old_tree: Directory, 
+                          new_tree: Directory) -> Tuple[list, list]:
+        '''
+        功能:生成new_tree相比old_tree的add_list和remove_list
+            这两个文件夹在相对目录cur_path中
+        '''
+        
 
-    def __scan_update(self, dir) -> Tuple[list, list]:
+    def __scan_update(self, dir: str) -> Tuple[list, list]:
         '''
         功能:扫描dir文件夹里的修改。如果dir或dir的几层父目录之前不存在,那么也要放到Dir里面
         参数:dir是绝对路径
@@ -33,37 +41,59 @@ class Stage():
         如果Dir的父文件夹不存在,要把dir的新增父文件夹的Dir构造出来
         '''
         assert(os.path.exists(dir))
-        dir = os.path.relpath(dir, self.root_path)  # dir转为相对路径
-        dir = os.path.normpath(dir)
-        dirs = dir.split(os.sep)
+        new_dir_tree = Directory()
+        new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
+        dir_relpath = os.path.relpath(dir, self.root_path)  # 转为相对路径
+        dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
+        dirs = dir.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
             del dirs[0]
         
         u = self.dir_tree
-        path = '.'
+        u_fa = None
+        cur_path = '.'
         stop = -1
         for i, dirname in enumerate(dirs):
             v = u.enter(dirname)
             if not v:
                 stop = i
                 break
-            u = v
-            path = os.path.join(path, dirname)
+            u_fa, u = u, v
+            cur_path = os.path.join(cur_path, dirname)
+        
+        add_list = []
+        remove_list = []
         if stop == -1:
             '''
             dir在stage中存在
+            此时cur_path是到dir的相对路径
+            u是self.dir_tree的子孙结点,是dir的目录树
             '''
+            add_list, remove_list = self.__get_update_list(cur_path, u, new_dir_tree)
+            u.copy(new_dir_tree)
         elif stop == len(dirs) - 1:
             '''
             dir在stage中不存在,但dir的上一级目录在stage中存在
+            此时cur_path是到dir上一级目录的相对路径
+            u是self.dir_tree的子孙结点,是dir的上一级目录的目录树
             '''
+            u.files[new_dir_tree.name] = new_dir_tree
+            add_list = [(cur_path, new_dir_tree)]
         else:
             '''
             dir和上面的某几级目录在stage中都不存在
             '''
-            dirs = dirs[i:]
-        # 没写完
-        # 思路：对工作区里的dir构造新Directory覆盖旧的
+            fa_dir_tree = Directory(dirs[stop])  # 最上层的原本不存在的目录的树结构
+            v = fa_dir_tree
+            for dirname in dirs[stop+1:-1]:
+                w = Directory(dirname)
+                v.files['dirname'] = w
+                v = w
+            # v现在是dir的上级目录的目录树
+            v.files[new_dir_tree.name] = new_dir_tree
+            add_list = [(cur_path, fa_dir_tree)]
+        
+        return add_list, remove_list
 
 
 
@@ -76,6 +106,7 @@ class Stage():
         add_list, del_list = self.__scan_update(dir)
         upd = Update(add_list, del_list)
         self.__modify_sequence.append(upd)
+        # todo:还要更新工作区状态
     
     def add(self, src: str, dst: str) -> None:
         '''
