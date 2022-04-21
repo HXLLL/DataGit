@@ -10,3 +10,6 @@ class Blob:
 
     def unfold(self, root_path: str) -> List[Tuple[str, Blob]]:
         return [(os.path.join(root_path, self.name), self)]
+    
+    def construct(self, working_dir: str) -> None:
+        _, self.name = os.path.split(working_dir)
