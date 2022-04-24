@@ -19,7 +19,7 @@ class Directory():
         return self.__dirs
     
     def set_dir(self, dir: 'Directory') -> None:
-        self.__dirs[dir.name] = dir
+        self.__dirs[dir.get_name()] = dir
     
     def set_file(self, file: Blob) -> None:
         self.__files[file.name] = file
@@ -38,13 +38,14 @@ class Directory():
         '''
         return self.__files[filename] if filename in self.__files.keys() else None
       
-    def copy(self, new_dir):
+    def copy(self, new_dir: 'Directory'):
         '''
         功能:复制new_dir的信息到self。用于就地更新目录树的某个节点而不改变父子关系。
         '''
-        assert(self.__name == new_dir.name)  # 如果名字变了，父亲就找不到self。
-        self.__files = new_dir.files
-        self.__dirs = new_dir.dirs
+        print('copy', self.__name, new_dir.get_name())
+        assert(self.__name == new_dir.get_name())  # 如果名字变了，父亲就找不到self。
+        self.__files = new_dir.get_files()
+        self.__dirs = new_dir.get_dirs()
         
     def build_dict(self, working_dir: str) -> None:
         '''
