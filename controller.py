@@ -5,10 +5,10 @@ from stage import Stage
 from version import Version
 
 
-def trans_path(dir:str) -> str:
+def trans_path(dir: str) -> str:
     if os.path.isabs(dir):
-        return dir
-    return os.path.join(os.getcwd(), dir)
+        return os.path.normcase(dir)
+    return os.path.normcase(os.path.join(os.getcwd(), dir))
 
 
 def init() -> None:
