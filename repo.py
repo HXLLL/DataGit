@@ -11,8 +11,7 @@ class Repo:
     def __init__(self):
         self.init_version = Version(None, 1, [], 'init')
         self.versions: List[Version] = [self.init_version]
-        self.saved_version: List[int] = [1]
-        storage.save_version()
+        self.saved_version: List[int] = []
         self.HEAD: Union[str, int] = 'main'
         self.detached_head: bool = False
         self.branch_map: dict[str, int] = {'main': 1}  # map branch name to version id
@@ -21,6 +20,7 @@ class Repo:
     def init(self) -> None:
         storage.create_repo()
         storage.save_version(self.init_version.id, os.getcwd())
+        self.saved_version = [1]
 
     def __new_version_id(self) -> int:
         return len(self.versions) + 1
