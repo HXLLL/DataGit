@@ -50,8 +50,8 @@ def add(src: str, dst: str) -> None:
 
     src = trans_path(src)
     dst = trans_path(dst)
-    if os.path.exists(src) and os.path.exists(dst):
-        if os.path.isdir(src) and os.path.isdir(dst):
+    if os.path.exists(src):
+        if os.path.isdir(src):
             stage.add(src, dst)
         else:
             print("fault: datagit add <src> <dst>: <src> and <dst> should lead to dir")
@@ -96,6 +96,7 @@ def commit(msg: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    print(msg)
     repo.commit(stage, msg)
 
     storage.save_repo(repo)

@@ -85,12 +85,17 @@ class Directory():
 
         for new_file in self.__files.values():
             filename = new_file.get_name()
+<<<<<<< Updated upstream
             print('filename:', filename)
             if filename in old_files:
                 old_file = old_files[filename]
                 print('new hash:', new_file.get_hash())
                 print('old hash:', old_file.get_hash())
                 print('equal:', new_file.get_hash() == old_file.get_hash())
+=======
+            if filename in old_files:
+                old_file = old_files[filename]
+>>>>>>> Stashed changes
                 if new_file.get_hash() != old_file.get_hash():
                     remove_list.append((relpath, old_file))
                     add_list.append((relpath, new_file))
