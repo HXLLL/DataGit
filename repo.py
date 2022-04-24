@@ -4,6 +4,7 @@ from storage import storage
 from version import Version
 from stage import Stage
 from typing import List
+import os
 import utils
 
 class Repo:
@@ -19,6 +20,7 @@ class Repo:
 
     def init(self) -> None:
         storage.create_repo()
+        storage.save_version(self.init_version.id, os.getcwd())
 
     def __new_version_id(self) -> int:
         return len(self.versions) + 1
