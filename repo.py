@@ -1,13 +1,13 @@
 from email.header import Header
 from typing import Tuple, List, Union, Dict
-import storage
+from storage import storage
 from version import Version
 from stage import Stage
 from typing import List
 
 
 class Repo:
-    def __init__(self) -> None:
+    def __init__(self):
         init_version = Version(None, [], 'init', 1)
         self.versions: List[Version] = [init_version]
         self.saved_version: List[int] = [1]

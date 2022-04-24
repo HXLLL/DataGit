@@ -13,6 +13,7 @@ def get_working_dir() -> str:
     while d != "/":
         if os.path.isdir(os.path.join(d, ".datagit")):
             break
+        d = os.path.dirname(d)
 
     if d != "/":
         return d
