@@ -136,7 +136,7 @@ class Repo:
                 else:
                     res_branch += ',' + branch_name
         res_branch += ')'
-        res = prefix + "* %d%s : %s\n" % (current_version.id, res_branch, current_version.message)
+        res = prefix + "* %d%s: %s\n" % (current_version.id, res_branch, current_version.message)
         child_list = []
         for child in self.versions:
             if child.parent is current_version.id:
