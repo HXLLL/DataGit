@@ -131,7 +131,7 @@ class Repo:
             if child.parent is current_version.id:
                 child_list.append(child)
         if len(child_list) == 0:
-            return
+            return res
         for child in child_list[:-1]:
             res += prefix + '|\\\n'
             res += self.find_log(child, prefix + "| ")

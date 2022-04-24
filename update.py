@@ -17,7 +17,8 @@ class Update(Modify):
         for item in self.__add_list:
             Files = item[1].unfold(utils.get_working_dir())
             for atuple in Files:
-                atuple[1].hash = storage.save_file(atuple[1])
+                h = storage.save_file(atuple[0])
+                atuple[1].set_hash(h)
     
     def apply(self, working_dir):
         '''

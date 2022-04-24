@@ -21,8 +21,8 @@ def get_working_dir() -> str:
 
 def get_hash(file:str) -> str:
     f = open(file, 'rb')
-    date = f.read()
-    return hashlib.sha1(str(date)).hexdigest()
+    data = f.read()
+    return hashlib.sha1(data).hexdigest()
 
 def in_working_dir(dir:str) -> bool:
     working_dir = get_working_dir()
