@@ -43,7 +43,7 @@ class Update(Modify):
 
     def info(self) -> str:
         def file2str(f):
-            return f[0] + f[1].get_name()
-        res = "add files: " + ", ".join(map(file2str, self.__add_list))
+            return os.path.join(f[0], f[1].get_name())
+        res = "add files: " + ", ".join(map(file2str, self.__add_list)) \
         + "\n" + "del files: " + ", ".join(map(file2str, self.__remove_list))
         return res
