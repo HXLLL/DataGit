@@ -160,5 +160,8 @@ class Stage():
         self.__modify_sequence.clear()
         return new_version
 
-    def status(self):
-        pass
+    def status(self) -> str:
+        res = ""
+        for m in self.__modify_sequence:
+            res += m.info() + "\n"
+        return res

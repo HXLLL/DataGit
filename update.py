@@ -17,7 +17,6 @@ class Update(Modify):
             Files = item.unfold(storage.get_working_dir())
             for atuple in Files:
                 atuple[1].hash = storage.save_file(atuple[1])
-            
     
     def apply(self, working_dir):
         '''
@@ -33,9 +32,16 @@ class Update(Modify):
                 git_file_name_1 = storage.get_file(atuple[1].hash)
                 shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), atuple[0])
             
-        for item in self.__del_list:
+        for item in self.__remove_list:
             path = os.path.join(working_dir, item)
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
                 os.remove(path)
+
+    def info(self) -> str:
+        def file2str(f):
+            return f[0] + f[1].get_name()
+        res = "add files: " + ", ".join(map(file2str, self.__add_list))
+        + "\n" + "del files: " + ", ".join(map(file2str, self.__remove_list))
+        return res

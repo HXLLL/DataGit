@@ -7,11 +7,7 @@ from typing import List
 
 
 class Repo:
-<<<<<<< HEAD
     def __init__(self):
-=======
-    def __init__(self) -> None:
->>>>>>> log finished
         self.init_version = Version(None, [], 'init', 1)
         self.versions: List[Version] = [self.init_version]
         self.saved_version: List[int] = [1]
@@ -141,12 +137,7 @@ class Repo:
             res += self.find_log(child, prefix + "| ")
         res += prefix + ' \\\n'
         res += self.find_log(child_list[-1], prefix + '  ')
-<<<<<<< HEAD
-        return
-=======
         return res
->>>>>>> log finished
-
 
     def log(self) -> str:
         return self.find_log(self.init_version, "")

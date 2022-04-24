@@ -32,3 +32,6 @@ class Transform(Modify):
                 for afile in files:
                     cmd = git_script_entry + " " + os.path.join(root, afile)
                     os.system(cmd)
+
+    def info(self) -> str:
+        return "transform: %s" % self.__message
