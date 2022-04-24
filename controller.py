@@ -124,7 +124,7 @@ def save(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.checkout(obj)
+    repo.save(obj)
     storage.save_repo(repo)
     storage.save_stage(stage)
 
