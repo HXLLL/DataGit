@@ -1,3 +1,4 @@
+from cv2 import accumulate
 from blob import Blob
 from typing import List, Tuple, Union, Dict
 import os
@@ -28,8 +29,10 @@ class Directory():
         '''
         功能：展开目录，返回一些元组(完整路径,对应的Blob)
         '''
-        return [file.unfold(os.path.join(root_path, self.__name)) 
-                for file in self.__files.values()]
+        res = []
+        for file in self.__files.values():
+            res += file.unfold(os.path.join(root_path, self.__name))
+        return res
     
     def enter(self, filename: str) -> Union['Directory', Blob, None]:
         '''
