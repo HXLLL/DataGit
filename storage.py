@@ -131,7 +131,7 @@ class Storage:
         dir is absolute path
         """
         wd = utils.get_working_dir()
-        for name, f in d.get_files():
+        for name, f in d.get_files().items():
             if isinstance(f, Blob):
                 h = f.hash
                 f_dir = self.get_file(h)
@@ -139,7 +139,7 @@ class Storage:
             else:
                 raise "Error type in directory"
         
-        for name, f in d.get_dirs():
+        for name, f in d.get_dirs().items():
             if isinstance(f, Directory):
                 os.mkdir(os.path.join(dir, name))
                 self.recover_directory(f, os.path.join(dir, name))
