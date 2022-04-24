@@ -28,6 +28,7 @@ class Storage:
         repo_path = os.path.join(utils.get_working_dir(), '.datagit', 'repo', 'repo.pk')
         with open(repo_path, 'rb') as repo_file:
             return pickle.load(repo_file)
+        return None
 
     def load_stage(self) -> 'Stage':
         """
@@ -36,6 +37,7 @@ class Storage:
         stage_path = os.path.join(utils.get_working_dir(), '.datagit', 'stage', 'stage.pk')
         with open(stage_path, 'rb') as stage_file:
             return pickle.load(stage_file)
+        return None
 
     def save_repo(self, repo: 'Repo') -> None:
         """

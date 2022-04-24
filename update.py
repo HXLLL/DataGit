@@ -15,7 +15,7 @@ class Update(Modify):
         self.__remove_list = remove_list
         #保存add_list内的文件
         for item in self.__add_list:
-            Files = item.unfold(storage.get_working_dir())
+            Files = item[1].unfold(utils.get_working_dir())
             for atuple in Files:
                 atuple[1].hash = storage.save_file(atuple[1])
     

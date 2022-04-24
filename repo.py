@@ -8,7 +8,7 @@ from typing import List
 
 class Repo:
     def __init__(self):
-        self.init_version = Version(None, 1, 'init', [])
+        self.init_version = Version(None, 1, [], 'init')
         self.versions: List[Version] = [self.init_version]
         self.saved_version: List[int] = [1]
         self.HEAD: Union[str, int] = 'main'
