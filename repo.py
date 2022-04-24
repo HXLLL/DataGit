@@ -7,14 +7,18 @@ from typing import List
 
 
 class Repo:
+<<<<<<< HEAD
     def __init__(self):
-        init_version = Version(None, [], 'init', 1)
-        self.versions: List[Version] = [init_version]
+=======
+    def __init__(self) -> None:
+>>>>>>> log finished
+        self.init_version = Version(None, [], 'init', 1)
+        self.versions: List[Version] = [self.init_version]
         self.saved_version: List[int] = [1]
         self.HEAD: Union[str, int] = 'main'
         self.detached_head: bool = False
         self.branch_map: dict[str, int] = {'main': 1}  # map branch name to version id
-        self.version_map: dict[int, Version] = {1: init_version}  # map hash to version
+        self.version_map: dict[int, Version] = {1: self.init_version}  # map hash to version
 
     def init(self) -> None:
         storage.create_repo()
@@ -116,11 +120,36 @@ class Repo:
 #             self.save(Version)/self.unsave(Version)
     
 # ------------------ log ---------------
-    def log(self) -> str:
-        res = ''
-        for v in self.versions:
-            res += "%s: %s" % (v.hash(), v.get_message())
+    def find_log(self, current_version:Version, prefix:str):
+        res_branch = '('
+        for branch_name in self.branch_map.keys():
+            if self.branch_map[branch_name] is current_version.id:
+                if res_branch == '(':
+                    res_branch += branch_name
+                else:
+                    res_branch += ',' + branch_name
+        res_branch += ')'
+        res = prefix + "* %d%s : %s\n" % (current_version.id, res_branch, current_version.message)
+        child_list = []
+        for child in self.versions:
+            if child.parent is current_version.id:
+                child_list.append(child)
+        if len(child_list) == 0:
+            return
+        for child in child_list[:-1]:
+            res += prefix + '|\\\n'
+            res += self.find_log(child, prefix + "| ")
+        res += prefix + ' \\\n'
+        res += self.find_log(child_list[-1], prefix + '  ')
+<<<<<<< HEAD
+        return
+=======
         return res
+>>>>>>> log finished
+
+
+    def log(self) -> str:
+        return self.find_log(self.init_version, "")
 
     def status(self) -> str:
         stage = storage.load_stage()
