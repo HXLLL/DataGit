@@ -6,9 +6,14 @@ from version import Version
 
 
 def trans_path(dir: str) -> str:
+    res = ''
     if os.path.isabs(dir):
-        return os.path.normcase(dir)
-    return os.path.normcase(os.path.join(os.getcwd(), dir))
+        res = os.path.normpath(dir)
+    else:
+        res = os.path.normpath(os.path.join(os.getcwd(), dir))
+    while res[:-1] == '.' or res[:-1] == '/':
+        res = res[:-1]
+    return res
 
 
 def init() -> None:
@@ -92,7 +97,6 @@ def commit(msg: str) -> None:
     stage = storage.load_stage()
 
     repo.commit(stage, msg)
-    stage = Version() # create a new stage
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -170,7 +174,7 @@ def branch(name: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.branch()
+    repo.branch(name)
 
     storage.save_repo(repo)
     storage.save_stage(stage)

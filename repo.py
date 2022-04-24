@@ -4,13 +4,15 @@ from storage import storage
 from version import Version
 from stage import Stage
 from typing import List
-
+import os
+import utils
 
 class Repo:
     def __init__(self):
-        self.init_version = Version(None, [], 'init', 1)
+        self.init_version = Version(None, 1, [], 'init')
         self.versions: List[Version] = [self.init_version]
         self.saved_version: List[int] = [1]
+        storage.save_version()
         self.HEAD: Union[str, int] = 'main'
         self.detached_head: bool = False
         self.branch_map: dict[str, int] = {'main': 1}  # map branch name to version id
@@ -18,6 +20,7 @@ class Repo:
 
     def init(self) -> None:
         storage.create_repo()
+        storage.save_version(self.init_version.id, os.getcwd())
 
     def __new_version_id(self) -> int:
         return len(self.versions) + 1
@@ -28,8 +31,16 @@ class Repo:
         save a stage to the repo's data structures
         """
 
+        pid = None
+        if not self.detached_head:
+            b = self.HEAD
+            assert type(b).__name__ == 'str'
+            pid = self.branch_map[b]
+        else:
+            raise "can't commit in detached HEAD mode"
+
         id = self.__new_version_id()
-        v = stage.commit(id, message)
+        v = stage.commit(pid, id, message)
         self.version_map[id] = v
         self.versions.append(v)
         if not self.detached_head:
@@ -46,7 +57,7 @@ class Repo:
 
         route = []
         v = dest_version
-        while not v.hash() in self.saved_version:
+        while not v.id in self.saved_version:
             route.append(v)
             pid = v.parent
             v = self.version_map[pid]
@@ -66,7 +77,7 @@ class Repo:
 
         dest_version = self.version_map[dst]
         src_version, route = self.__find_saved_dataSet(dest_version)
-        working_dir = storage.get_working_dir()
+        working_dir = utils.get_working_dir()
         storage.update_workingdir(src_version.id, working_dir) #以存储版本的复原
 
         modify_sequence = []
@@ -131,7 +142,7 @@ class Repo:
             if child.parent is current_version.id:
                 child_list.append(child)
         if len(child_list) == 0:
-            return
+            return res
         for child in child_list[:-1]:
             res += prefix + '|\\\n'
             res += self.find_log(child, prefix + "| ")
@@ -143,8 +154,14 @@ class Repo:
         return self.find_log(self.init_version, "")
 
     def status(self) -> str:
+        cur_branch = ""
+        if self.detached_head:
+            cur_branch = "Detached HEAD, at %d" % self.HEAD
+        else:
+            cur_branch = "HEAD at branch %s" % self.HEAD
+
         stage = storage.load_stage()
-        return stage.status()
+        return cur_branch + "\n" + stage.status()
 
 
 # ------------------ branch ---------------

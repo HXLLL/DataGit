@@ -1,5 +1,6 @@
 from modify import Modify
 from storage import storage
+import utils
 import os
 import shutil
 
@@ -14,26 +15,27 @@ class Update(Modify):
         self.__remove_list = remove_list
         #保存add_list内的文件
         for item in self.__add_list:
-            Files = item.unfold(storage.get_working_dir())
+            Files = item[1].unfold(utils.get_working_dir())
             for atuple in Files:
-                atuple[1].hash = storage.save_file(atuple[1])
+                h = storage.save_file(atuple[0])
+                atuple[1].set_hash(h)
     
     def apply(self, working_dir):
         '''
         将Update对应文件增删应用到working_dir目录下
         '''
         for item in self.__add_list:
-            Files = item.unfold(working_dir)
+            Files = item[1].unfold(working_dir)
             for atuple in Files:
-                file_path, file_name = os.path.split(atuple[0])
+                file_path, _ = os.path.split(atuple[0])
                 if not os.path.exists(file_path):
                     os.makedirs(file_path)
-                git_file_name_0 = storage.get_working_dir()
+                git_file_name_0 = utils.get_working_dir()
                 git_file_name_1 = storage.get_file(atuple[1].hash)
                 shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), atuple[0])
             
         for item in self.__remove_list:
-            path = os.path.join(working_dir, item)
+            path = os.path.join(working_dir, item[0])
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
@@ -41,7 +43,7 @@ class Update(Modify):
 
     def info(self) -> str:
         def file2str(f):
-            return f[0] + f[1].get_name()
-        res = "add files: " + ", ".join(map(file2str, self.__add_list))
+            return os.path.join(f[0], f[1].get_name())
+        res = "add files: " + ", ".join(map(file2str, self.__add_list)) \
         + "\n" + "del files: " + ", ".join(map(file2str, self.__remove_list))
         return res
