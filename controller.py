@@ -102,7 +102,7 @@ def checkout_v(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.checkout(obj)
+    repo.checkout(obj, False)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -111,9 +111,7 @@ def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    # TODO
-    # turn branch string to version ID
-    repo.checkout(obj)
+    repo.checkout(obj, True)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -124,7 +122,6 @@ def save(obj: int) -> None:
     stage = storage.load_stage()
 
     repo.checkout(obj)
-
     storage.save_repo(repo)
     storage.save_stage(stage)
 
@@ -159,6 +156,7 @@ def log() -> str:
     storage.save_stage(stage)
     return log_info
 
+
 def status() -> str:
     repo = storage.load_repo()
     stage = storage.load_stage()
@@ -168,6 +166,7 @@ def status() -> str:
     storage.save_repo(repo)
     storage.save_stage(stage)
     return status_info
+
 
 def branch(name: str) -> None:
     repo = storage.load_repo()

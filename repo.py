@@ -116,10 +116,34 @@ class Repo:
 #             self.save(Version)/self.unsave(Version)
     
 # ------------------ log ---------------
+    def find_log(self, current_version:Version, prefix:str):
+        res_branch = '('
+        for branch_name in self.branch_map.keys():
+            if self.branch_map[branch_name] is current_version.id:
+                if res_branch == '(':
+                    res_branch += branch_name
+                else:
+                    res_branch += ',' + branch_name
+        res_branch += ')'
+        res = prefix + "* %d%s : %s\n" % (current_version.id, res_branch, current_version.message)
+        child_list = []
+        for child in self.versions:
+            if child.parent is current_version.id:
+                child_list.append(child)
+        if len(child_list) == 0:
+            return
+        for child in child_list[:-1]:
+            res += prefix + '|\\\n'
+            self.find_log(child, prefix + "| ")
+        res += prefix + ' \\\n'
+        self.find_log(child_list[-1], prefix + '  ')
+        return
+
+
     def log(self) -> str:
         res = ''
         for v in self.versions:
-            res += "%s: %s" % (v.hash(), v.get_message())
+            res += "%s: %s\n" % (v.hash(), v.get_message())
         return res
 
     def status(self) -> str:
