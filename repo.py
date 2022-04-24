@@ -8,13 +8,13 @@ from typing import List
 
 class Repo:
     def __init__(self):
-        init_version = Version(None, [], 'init', 1)
-        self.versions: List[Version] = [init_version]
+        self.init_version = Version(None, [], 'init', 1)
+        self.versions: List[Version] = [self.init_version]
         self.saved_version: List[int] = [1]
         self.HEAD: Union[str, int] = 'main'
         self.detached_head: bool = False
         self.branch_map: dict[str, int] = {'main': 1}  # map branch name to version id
-        self.version_map: dict[int, Version] = {1: init_version}  # map hash to version
+        self.version_map: dict[int, Version] = {1: self.init_version}  # map hash to version
 
     def init(self) -> None:
         storage.create_repo()
@@ -134,17 +134,14 @@ class Repo:
             return
         for child in child_list[:-1]:
             res += prefix + '|\\\n'
-            self.find_log(child, prefix + "| ")
+            res += self.find_log(child, prefix + "| ")
         res += prefix + ' \\\n'
-        self.find_log(child_list[-1], prefix + '  ')
-        return
+        res += self.find_log(child_list[-1], prefix + '  ')
+        return res
 
 
     def log(self) -> str:
-        res = ''
-        for v in self.versions:
-            res += "%s: %s\n" % (v.hash(), v.get_message())
-        return res
+        return self.find_log(self.init_version, "")
 
     def status(self) -> str:
         stage = storage.load_stage()
