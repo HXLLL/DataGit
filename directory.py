@@ -42,7 +42,7 @@ class Directory():
         '''
         功能:复制new_dir的信息到self。用于就地更新目录树的某个节点而不改变父子关系。
         '''
-        print('copy', self.__name, new_dir.get_name())
+        # print('copy', self.__name, new_dir.get_name())
         assert(self.__name == new_dir.get_name())  # 如果名字变了，父亲就找不到self。
         self.__files = new_dir.get_files()
         self.__dirs = new_dir.get_dirs()
@@ -57,7 +57,9 @@ class Directory():
                 if item != '.datagit':
                     self.__dirs[item] = Directory(item)
             else:
-                self.__files[item] = Blob(item)
+                file = Blob(item)
+                file.set_hash(utils.get_hash(os.path.join(working_dir, item)))
+                self.__files[item] = file
     
     def construct(self, working_dir: str) -> None:
         '''
@@ -80,8 +82,12 @@ class Directory():
 
         for new_file in self.__files.values():
             filename = new_file.get_name()
+            print('filename:', filename)
             if filename in old_files:
                 old_file = old_files[filename]
+                print('new hash:', new_file.get_hash())
+                print('old hash:', old_file.get_hash())
+                print('equal:', new_file.get_hash() == old_file.get_hash())
                 if new_file.get_hash() != old_file.get_hash():
                     remove_list.append((relpath, old_file))
                     add_list.append((relpath, new_file))

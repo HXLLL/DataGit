@@ -13,8 +13,8 @@ class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
         self.__root_dir: str = utils.get_working_dir()
-        self.__dir_tree: Directory = Directory()
-        self.__dir_tree.construct(self.__root_dir)
+        root_dirname = os.path.split(self.__root_dir)[1]
+        self.__dir_tree: Directory = Directory(root_dirname)
 
     def __scan_update(self, dir: str) -> Tuple[list, list]:
         '''
@@ -32,8 +32,10 @@ class Stage():
         '''
         assert(os.path.exists(dir))
         new_dir_tree = Directory()
-        print('dir =', dir)
+        # print('dir =', dir)
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
+        # test = new_dir_tree.unfold('.')
+        # print(test)
         dir_relpath = os.path.relpath(dir, self.__root_dir)  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
         dirs = dir_relpath.split(os.sep)  # 路径拆分
@@ -95,7 +97,7 @@ class Stage():
         '''
         参数是绝对路径
         '''
-        print(dir)
+        # print(dir)
         assert(utils.in_working_dir(dir))
 
         add_list, del_list = self.__scan_update(dir)
@@ -120,7 +122,7 @@ class Stage():
 
         # 把src里的所有东西复制到dst
         for src_dir, dirnames, filenames in os.walk(src):
-            print('a:', src_dir, dirnames, filenames)
+            # print('a:', src_dir, dirnames, filenames)
             for filename in filenames:
                 rel_dir = os.path.relpath(src_dir, src)
                 dst_dir = os.path.join(dst, rel_dir)
