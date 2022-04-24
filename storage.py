@@ -150,10 +150,10 @@ class Storage:
         """
         dir is absolute path
         """
-        for name, f in d.get_files():
+        for name, f in d.get_files().items():
             self.save_file(os.path.join(dir, name))
 
-        for name, f in d.get_dirs():
+        for name, f in d.get_dirs().items():
             self.save_directory(f, os.path.join(dir, name))
         
 
@@ -165,8 +165,11 @@ class Storage:
         with open(saved_version_dir, "rb") as f:
             directory = pickle.load(f)
         for d in os.listdir(dir):
-            if d != '.datagit':
-                shutil.rmtree(os.path.join(dir, d))
+            f_path = os.path.join(dir, d)
+            if os.path.isdir(f_path) and d != '.datagit':
+                shutil.rmtree(f_path)
+            elif d != '.datagit':
+                os.remove(f_path)
         self.recover_directory(directory, dir)
 
     def save_version(self, versionID: int, dir: str) -> None:
