@@ -173,7 +173,7 @@ def branch(name: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.branch()
+    repo.branch(name)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
