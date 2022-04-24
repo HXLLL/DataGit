@@ -30,6 +30,8 @@ class Directory():
         功能：展开目录，返回一些元组(完整路径,对应的Blob)
         '''
         res = []
+        for dirs in self.__dirs.values():
+            res += dirs.unfold(os.path.join(root_path, self.__name))
         for file in self.__files.values():
             res += file.unfold(os.path.join(root_path, self.__name))
         return res
@@ -39,7 +41,11 @@ class Directory():
         功能:返回名字为filename的子目录或者子文件
         返回值:存在则返回Directory或Blob,不存在则返回None
         '''
-        return self.__files[filename] if filename in self.__files.keys() else None
+        if filename in self.__dirs:
+            return self.__dirs[filename]
+        if filename in self.__files:
+            return self.__files[filename]
+        return None
       
     def copy(self, new_dir: 'Directory'):
         '''
@@ -70,6 +76,7 @@ class Directory():
         '''
         _, self.__name = os.path.split(working_dir)
         self.build_dict(working_dir)
+        print('dirs', self.__dirs)
         for item in self.__dirs:
             self.__dirs[item].construct(os.path.join(working_dir, item))
     
@@ -85,12 +92,12 @@ class Directory():
 
         for new_file in self.__files.values():
             filename = new_file.get_name()
-            print('filename:', filename)
+            # print('filename:', filename)
             if filename in old_files:
                 old_file = old_files[filename]
-                print('new hash:', new_file.get_hash())
-                print('old hash:', old_file.get_hash())
-                print('equal:', new_file.get_hash() == old_file.get_hash())
+                # print('new hash:', new_file.get_hash())
+                # print('old hash:', old_file.get_hash())
+                # print('equal:', new_file.get_hash() == old_file.get_hash())
                 if new_file.get_hash() != old_file.get_hash():
                     remove_list.append((relpath, old_file))
                     add_list.append((relpath, new_file))
