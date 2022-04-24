@@ -74,7 +74,7 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
                 entry_file = os.path.join(dir1, entry)
                 if os.path.exists(entry_file):
                     if os.path.isfile(entry_file):
-                        stage.transform(dir1, entry, msg, is_map, dir2)
+                        stage.transform(dir1, entry, is_map, dir2, msg)
                     else:
                         print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to"
                               " a file")
@@ -96,6 +96,9 @@ def commit(msg: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if stage.empty():
+        raise "Nothing to commit"
+
     print(msg)
     repo.commit(stage, msg)
 
@@ -108,15 +111,19 @@ def checkout_v(obj: int) -> None:
     stage = storage.load_stage()
 
     repo.checkout(obj, False)
+    stage.reset()
 
     storage.save_repo(repo)
     storage.save_stage(stage)
+
 
 def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
     repo.checkout(obj, True)
+    stage.reset()
+
     storage.save_repo(repo)
     storage.save_stage(stage)
 
@@ -126,6 +133,7 @@ def save(obj: int) -> None:
     stage = storage.load_stage()
 
     repo.save(obj)
+
     storage.save_repo(repo)
     storage.save_stage(stage)
 

@@ -4,6 +4,7 @@ from directory import Directory
 from typing import List
 from storage import storage
 import os
+import utils
 
 class Transform(Modify):
     def __init__(self, isMap: int, script_dir: str, script_entry: str, script_working_dir: str, message: str) -> None:
@@ -12,6 +13,7 @@ class Transform(Modify):
         self.__script_dir = script_dir                  #绝对
         self.__script_entry = script_entry              #相对
         self.__script_working_dir = script_working_dir  #相对
+        # print('传的', isMap, script_working_dir)
         self.__id: int = storage.save_transform(script_dir)
         self.__message = message
 
@@ -20,18 +22,24 @@ class Transform(Modify):
         '''
         将Transform对应脚本应用到working_dir目录下
         '''
-        git_script_dir = os.path.join(storage.get_working_dir(), storage.get_transform(self.__id))
+        git_script_dir = os.path.join(utils.get_working_dir(), storage.get_transform(self.__id))
         git_script_entry = os.path.join(git_script_dir, self.__script_entry)
         # .datagit内script_entry的绝对路径
 
         if self.__isMap == 0:
             cmd = git_script_entry + " " + os.path.join(working_dir, self.__script_working_dir)
+            save_dir = os.getcwd()
+            os.chdir(git_script_dir)
             os.system(cmd)
+            os.chdir(save_dir)
         else:
+            save_dir = os.getcwd()
+            os.chdir(git_script_dir)
             for root, dir, files in os.walk(working_dir):
                 for afile in files:
                     cmd = git_script_entry + " " + os.path.join(root, afile)
                     os.system(cmd)
+            os.chdir(save_dir)
 
     def info(self) -> str:
         return "transform: %s" % self.__message

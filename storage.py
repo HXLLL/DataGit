@@ -131,15 +131,15 @@ class Storage:
         dir is absolute path
         """
         wd = utils.get_working_dir()
-        for name, f in d.get_files():
+        for name, f in d.get_files().items():
             if isinstance(f, Blob):
-                h = f.hash
+                h = f.get_hash()
                 f_dir = self.get_file(h)
                 shutil.copy(f_dir, os.path.join(dir, name))
             else:
                 raise "Error type in directory"
         
-        for name, f in d.get_dirs():
+        for name, f in d.get_dirs().items():
             if isinstance(f, Directory):
                 os.mkdir(os.path.join(dir, name))
                 self.recover_directory(f, os.path.join(dir, name))
@@ -178,6 +178,16 @@ class Storage:
         self.save_directory(d, dir)
 
         wd = utils.get_working_dir()
+        saved_version_dir = os.path.join(
+            wd, ".datagit", "versions", "%d.pk" % versionID)
+        with open(saved_version_dir, "wb") as f:
+            pickle.dump(d, f)
+
+    def save_empty_version(self, versionID: int) -> None:
+        _, name = os.path.split(os.getcwd())
+        d = Directory(name)
+
+        wd = os.getcwd()
         saved_version_dir = os.path.join(
             wd, ".datagit", "versions", "%d.pk" % versionID)
         with open(saved_version_dir, "wb") as f:
