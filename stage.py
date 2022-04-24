@@ -179,3 +179,6 @@ class Stage():
         self.__dir_tree.construct(self.__root_dir)
 
         self.__modify_sequence = []
+
+    def empty(self) -> None:
+        return len(self.__modify_sequence) == 0

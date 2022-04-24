@@ -96,6 +96,9 @@ def commit(msg: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if stage.empty():
+        raise "Nothing to commit"
+
     print(msg)
     repo.commit(stage, msg)
 
@@ -107,16 +110,21 @@ def checkout_v(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if not stage.empty():
+        raise "Stage not empty"
     repo.checkout(obj, False)
     stage.reset()
 
     storage.save_repo(repo)
     storage.save_stage(stage)
 
+
 def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if not stage.empty():
+        raise "Stage not empry"
     repo.checkout(obj, True)
     stage.reset()
 

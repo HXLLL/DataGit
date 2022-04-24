@@ -68,6 +68,7 @@ class Repo:
         """
         given a version ID or branch name, replace contents of the working dir with files of that branch
         """
+
         if to_branch:
             self.HEAD = dst
             self.detached_head = False
@@ -92,6 +93,10 @@ class Repo:
         """
         save a version.
         """
+        if VersionID in self.saved_version:
+            raise "This version has already been saved"
+
+
         dest_version = self.version_map[VersionID] # exit if VersionID not exists
         src_version, route = self.__find_saved_dataSet(dest_version)
         tmp_dir = storage.create_tmp_dir()
@@ -111,7 +116,8 @@ class Repo:
         """
         unsave a version.
         """
-        assert VersionID in self.saved_version
+        if not VersionID in self.saved_version:
+            raise "This version has not been saved"
 
         storage.delete_version(VersionID)
         self.saved_version.delete(VersionID)
@@ -164,9 +170,11 @@ class Repo:
         stage = storage.load_stage()
         return cur_branch + "\n" + stage.status()
 
-
 # ------------------ branch ---------------
     def branch(self, branch_name) -> None:
+        if branch_name in self.branch_map:
+            raise "Branch already exists"
+
         if self.detached_head:
             self.branch_map[branch_name] = self.HEAD
         else:
