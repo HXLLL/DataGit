@@ -46,7 +46,7 @@ class Repo:
 
         route = []
         v = dest_version
-        while not v.hash() in self.saved_version:
+        while not v.id in self.saved_version:
             route.append(v)
             pid = v.parent
             v = self.version_map[pid]
