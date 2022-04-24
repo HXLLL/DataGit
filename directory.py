@@ -62,7 +62,7 @@ class Directory():
     
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''
-        功能:找出self相对old的add_list和remove_list。当前这两个目录的相对路径都是path。
+        功能:找出self相对old的add_list和remove_list。当前这两个目录的相对路径都是relpath。
         '''
         old_dirs = old.get_dirs()
         old_files = old.get_files()

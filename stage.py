@@ -14,9 +14,9 @@ import shutil
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
-        self.root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
-        self.dir_tree: Directory = Directory()
-        self.dir_tree.construct(self.root_dir)
+        self.__root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
+        self.__dir_tree: Directory = Directory()
+        self.__dir_tree.construct(self.__root_dir)
 
     def __scan_update(self, dir: str) -> Tuple[list, list]:
         '''
@@ -37,11 +37,11 @@ class Stage():
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
         dir_relpath = os.path.relpath(dir, self.root_path)  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
-        dirs = dir.split(os.sep)  # 路径拆分
+        dirs = dir_relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
             del dirs[0]
         
-        u = self.dir_tree
+        u = self.__dir_tree
         cur_path = '.'
         stop = -1
         for i, dirname in enumerate(dirs):
@@ -132,18 +132,31 @@ class Stage():
     def transform(self, dir1: str, entry: str, isMap: int, dir2: str, message: str):
         '''
         新建一个Transform实例,添加到modify_sequnece中,并应用到工作目录
+        dir1是代码目录,dir2是数据目录,都是绝对路径
         '''
 
         m = Transform(isMap, dir1, entry, dir2, message)
         self.__modify_sequence.append(m)
-
         m.apply(storage.get_working_dir())
+        new_dir_tree = Directory()
+        new_dir_tree.construct(dir2)
+        relpath = os.path.relpath(dir2, self.__root_dir)
+        relpath = os.path.normpath(relpath)  # 转为标准格式
+        dirs = relpath.split(os.sep)  # 路径拆分
+        if dirs[0] == '.':
+            del dirs[0]
+        u = self.__dir_tree
+        for dirname in dirs[:-1]:
+            u = u.enter(dirname)
+        u.set_dir(new_dir_tree)  # 更新transform的目录的状态到目录树上
+
     
-    def commit(self,parentID: int, id: int, message: str) -> Version:
+    def commit(self, parentID: int, id: int, message: str) -> Version:
         '''
         新建并返回一个Version实例
         '''
         new_version = Version(parentID, id, self.__modify_sequence, message)
+        self.__modify_sequence.clear()
         return new_version
 
     def status(self):
