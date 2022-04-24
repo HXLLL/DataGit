@@ -108,6 +108,7 @@ def checkout_v(obj: int) -> None:
     stage = storage.load_stage()
 
     repo.checkout(obj, False)
+    stage.reset()
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -117,6 +118,8 @@ def checkout_b(obj: str) -> None:
     stage = storage.load_stage()
 
     repo.checkout(obj, True)
+    stage.reset()
+
     storage.save_repo(repo)
     storage.save_stage(stage)
 

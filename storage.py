@@ -183,6 +183,16 @@ class Storage:
         with open(saved_version_dir, "wb") as f:
             pickle.dump(d, f)
 
+    def save_empty_version(self, versionID: int) -> None:
+        _, name = os.path.split(os.getcwd())
+        d = Directory(name)
+
+        wd = os.getcwd()
+        saved_version_dir = os.path.join(
+            wd, ".datagit", "versions", "%d.pk" % versionID)
+        with open(saved_version_dir, "wb") as f:
+            pickle.dump(d, f)
+
     def delete_version(self, versionID: int) -> None:
         # TODO: actually remove saved files
         pass

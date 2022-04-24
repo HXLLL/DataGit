@@ -19,7 +19,7 @@ class Repo:
 
     def init(self) -> None:
         storage.create_repo()
-        storage.save_version(self.init_version.id, os.getcwd())
+        storage.save_empty_version(1)
         self.saved_version = [1]
 
     def __new_version_id(self) -> int:

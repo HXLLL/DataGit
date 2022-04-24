@@ -172,3 +172,10 @@ class Stage():
             return "The working tree is clean."
         else:
             return res
+    
+    def reset(self) -> None:
+        # TODO: prompt user when modify_sequence is not empty
+        self.__dir_tree = Directory(self.__dir_tree.get_name())
+        self.__dir_tree.construct(self.__root_dir)
+
+        self.__modify_sequence = []
