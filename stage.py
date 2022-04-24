@@ -32,9 +32,7 @@ class Stage():
         '''
         assert(os.path.exists(dir))
         new_dir_tree = Directory()
-        # print('dir =', dir)
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
-        # print('unfold', new_dir_tree.unfold('test1'))
         dir_relpath = os.path.relpath(dir, self.__root_dir)  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
         dirs = dir_relpath.split(os.sep)  # 路径拆分
