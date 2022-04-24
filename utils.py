@@ -1,6 +1,5 @@
 import hashlib
 import os.path
-from storage import Storage
 
 def get_working_dir() -> str:
     """
