@@ -73,6 +73,7 @@ class Repo:
             self.detached_head = False
             dst = self.branch_map[dst]
         else:
+            self.detached_head = True
             self.HEAD = dst
 
         dest_version = self.version_map[dst]
