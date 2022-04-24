@@ -1,4 +1,3 @@
-from cv2 import accumulate
 from blob import Blob
 from typing import List, Tuple, Union, Dict
 import os
