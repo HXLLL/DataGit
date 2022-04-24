@@ -82,7 +82,7 @@ class Repo:
 
         modify_sequence = []
         for v in route:
-            modify_sequence += v.get_modify()
+            modify_sequence += v.modify_sequence
         for m in modify_sequence:
             m.apply(working_dir)
 
@@ -98,7 +98,7 @@ class Repo:
 
         modify_sequence = []
         for v in route:
-            modify_sequence += v.get_modify()
+            modify_sequence += v.modify_sequence
         for m in modify_sequence:
             m.apply(tmp_dir)
 
