@@ -2,6 +2,7 @@
 # from blob import Blob
 from typing import List, Tuple
 import os
+import utils
 
 class Blob:
     def __init__(self, name, hash=None) -> None:
@@ -20,5 +21,3 @@ class Blob:
     def unfold(self, root_path: str) -> List[Tuple[str, 'Blob']]:
         return [(os.path.join(root_path, self.__name), self)]
     
-    def construct(self, working_dir: str) -> None:
-        _, self.__name = os.path.split(working_dir)
