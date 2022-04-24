@@ -166,4 +166,7 @@ class Stage():
         res = ""
         for m in self.__modify_sequence:
             res += m.info() + "\n"
-        return res
+        if res == "":
+            return "The working tree is clean."
+        else:
+            return res
