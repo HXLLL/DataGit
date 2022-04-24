@@ -111,14 +111,7 @@ def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-<<<<<<< Updated upstream
     repo.checkout(obj, True)
-=======
-    # TODO
-    # turn branch string to version ID
-    repo.checkout(obj)
->>>>>>> Stashed changes
-
     storage.save_repo(repo)
     storage.save_stage(stage)
 
@@ -128,10 +121,6 @@ def save(obj: int) -> None:
     stage = storage.load_stage()
 
     repo.checkout(obj)
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     storage.save_repo(repo)
     storage.save_stage(stage)
 
@@ -159,44 +148,24 @@ def adjust() -> None:
 def log() -> str:
     repo = storage.load_repo()
     stage = storage.load_stage()
-<<<<<<< Updated upstream
 
     log_info = repo.log()
 
     storage.save_repo(repo)
     storage.save_stage(stage)
     return log_info
-=======
->>>>>>> Stashed changes
 
-    log_info = repo.log()
-
-    storage.save_repo(repo)
-    storage.save_stage(stage)
-    return log_info
 
 def status() -> str:
     repo = storage.load_repo()
     stage = storage.load_stage()
-<<<<<<< Updated upstream
 
     status_info = repo.status()
 
     storage.save_repo(repo)
     storage.save_stage(stage)
     return status_info
-=======
->>>>>>> Stashed changes
 
-    status_info = repo.status()
-
-<<<<<<< Updated upstream
-=======
-    storage.save_repo(repo)
-    storage.save_stage(stage)
-    return status_info
-
->>>>>>> Stashed changes
 def branch(name: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()

@@ -137,7 +137,7 @@ class Repo:
             res += self.find_log(child, prefix + "| ")
         res += prefix + ' \\\n'
         res += self.find_log(child_list[-1], prefix + '  ')
-        return res
+        return
 
 
     def log(self) -> str:
