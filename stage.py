@@ -110,15 +110,15 @@ class Stage():
         '''
 
         '''
-        1.检查dst是否重名,若重名则报错（暂时方案）
-        2.建dst文件夹
-        3.把src里面的东西扔到dst里面
-        4.建立dst文件夹的Directory结构
-        5.把dir结构扔到modify_sequence里面
+        1.建dst文件夹
+        2.把src里面的东西扔到dst里面,若重名直接覆盖
+        3.建立dst文件夹的Directory结构
+        4.把dir结构扔到modify_sequence里面
         '''
         assert(utils.in_working_dir(dst))
         assert os.path.exists(src)
-        assert not os.path.exists(dst)
+        if not os.path.exists(dst):
+            os.makedirs(dst)
 
         # 把src里的所有东西复制到dst
         for src_dir, dirnames, filenames in os.walk(src):
