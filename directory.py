@@ -54,7 +54,7 @@ class Directory():
             abs_path = os.path.join(working_dir, item)
             if os.path.isdir(abs_path):
                 if item != '.datagit':
-                    self.__files[item] = Directory(item)
+                    self.__dirs[item] = Directory(item)
             else:
                 self.__files[item] = Blob(item)
     
@@ -65,7 +65,7 @@ class Directory():
         _, self.__name = os.path.split(working_dir)
         self.build_dict(working_dir)
         for item in self.__dirs:
-            item.construct(os.path.join(working_dir, item))
+            self.__dirs[item].construct(os.path.join(working_dir, item))
     
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''
