@@ -97,7 +97,6 @@ def commit(msg: str) -> None:
     stage = storage.load_stage()
 
     repo.commit(stage, msg)
-    stage = Version() # create a new stage
 
     storage.save_repo(repo)
     storage.save_stage(stage)

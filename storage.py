@@ -159,7 +159,8 @@ class Storage:
 
     def update_workingdir(self, versionID: int, dir: str) -> None:
         wd = utils.get_working_dir()
-        saved_version_dir = os.path.join(wd, ".datagit/versions/%d.pk")
+        saved_version_dir = os.path.join(
+            wd, ".datagit/versions/%d.pk" % versionID)
         directory = None
         with open(saved_version_dir, "rb") as f:
             directory = pickle.load(f)
@@ -168,10 +169,16 @@ class Storage:
                 shutil.rmtree(os.path.join(dir, d))
         self.recover_directory(directory, dir)
 
-    def save_version(self, dir: str) -> None:
+    def save_version(self, versionID: int, dir: str) -> None:
         d = Directory()
         d.construct(dir)
         self.save_directory(d, dir)
+
+        wd = utils.get_working_dir()
+        saved_version_dir = os.path.join(
+            wd, ".datagit/versions/%d.pk" % versionID)
+        with open(saved_version_dir, "wb") as f:
+            pickle.dump(d, f)
 
     def delete_version(self, versionID: int) -> None:
         # TODO: actually remove saved files
