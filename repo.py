@@ -1,12 +1,13 @@
 from email.header import Header
 from typing import Tuple, List, Union, Dict
-import storage
-from version import Version, Stage
+from storage import storage
+from version import Version
+from stage import Stage
 from typing import List
 
 
 class Repo:
-    def __init__(self) -> None:
+    def __init__(self):
         init_version = Version(None, [], 'init', 1)
         self.versions: List[Version] = [init_version]
         self.saved_version: List[int] = [1]
@@ -47,7 +48,8 @@ class Repo:
         v = dest_version
         while not v.hash() in self.saved_version:
             route.append(v)
-            v = v.parent()
+            pid = v.parent
+            v = self.version_map[pid]
         route.reverse()
         return v, route
 

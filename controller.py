@@ -1,5 +1,5 @@
 import os
-import storage
+from storage import storage
 from repo import Repo
 from stage import Stage
 from version import Version
@@ -13,11 +13,10 @@ def trans_path(dir:str) -> str:
 
 def init() -> None:
     repo = Repo()
-    stage = Stage()
-
     repo.init()
-
     storage.save_repo(repo)
+
+    stage = Stage()
     storage.save_stage(stage)
 
 

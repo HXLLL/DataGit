@@ -3,8 +3,6 @@ from modify import Modify
 from directory import Directory
 from transform import Transform
 from update import Update
-from storage import storage
-from blob import Blob
 from version import Version
 from typing import Tuple
 import os
@@ -137,7 +135,7 @@ class Stage():
 
         m = Transform(isMap, dir1, entry, dir2, message)
         self.__modify_sequence.append(m)
-        m.apply(storage.get_working_dir())
+        m.apply(self.__root_dir)
         new_dir_tree = Directory()
         new_dir_tree.construct(dir2)
         relpath = os.path.relpath(dir2, self.__root_dir)
@@ -149,7 +147,6 @@ class Stage():
         for dirname in dirs[:-1]:
             u = u.enter(dirname)
         u.set_dir(new_dir_tree)  # 更新transform的目录的状态到目录树上
-
     
     def commit(self, parentID: int, id: int, message: str) -> Version:
         '''
