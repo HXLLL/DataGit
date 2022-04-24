@@ -6,9 +6,14 @@ from version import Version
 
 
 def trans_path(dir: str) -> str:
+    res = ''
     if os.path.isabs(dir):
-        return os.path.normcase(dir)
-    return os.path.normcase(os.path.join(os.getcwd(), dir))
+        res = os.path.normcase(dir)
+    else:
+        res = os.path.normcase(os.path.join(os.getcwd(), dir))
+    while res[:-1] == '.' or res[:-1] == '/':
+        res = res[:-1]
+    return res
 
 
 def init() -> None:
