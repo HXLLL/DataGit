@@ -64,11 +64,11 @@ class Storage:
             # 仓库已存在，可能需要输出错误信息
             return
         os.mkdir(".datagit")
-        os.mkdir(".datagit/data")
-        os.mkdir(".datagit/repo")
-        os.mkdir(".datagit/stage")
-        os.mkdir(".datagit/programs")
-        os.mkdir(".datagit/versions")
+        os.mkdir(os.path.join(".datagit", "data"))
+        os.mkdir(os.path.join(".datagit", "repo"))
+        os.mkdir(os.path.join(".datagit", "stage"))
+        os.mkdir(os.path.join(".datagit", "programs"))
+        os.mkdir(os.path.join(".datagit", "versions"))
 
     def save_file(self, file_name: str) -> str:
         """
@@ -78,7 +78,7 @@ class Storage:
 
         wd = utils.get_working_dir()
         h = utils.get_hash(file_name)
-        dst = os.path.join(wd, ".datagit/data/", h)
+        dst = os.path.join(wd, ".datagit", "data", h)
         shutil.copy(file_name, dst)
         return h
 
@@ -88,7 +88,7 @@ class Storage:
         return -- relative path to working dir's root
         """
 
-        return ".datagit/data/%s" % hash_value
+        return os.path.join(".datagit", "data", "%s" % hash_value)
 
     def save_transform(self, dir1: str) -> int:
         """
@@ -98,7 +98,7 @@ class Storage:
         """
 
         wd = utils.get_working_dir()
-        program_dir = os.path.join(wd, ".datagit/programs")
+        program_dir = os.path.join(wd, ".datagit", "programs")
         cnt = len(os.listdir(program_dir))
         id = cnt + 1
         dst = os.path.join(program_dir, "%d" % id)
@@ -111,7 +111,7 @@ class Storage:
         return -- relative path to working dir's root
         """
 
-        return ".datagit/programs/%d" % id
+        return os.path.join(".datagit", "programs", "%d" % id)
 
     def create_tmp_dir(self) -> str:
         """
@@ -120,7 +120,7 @@ class Storage:
         !!! currently only support one temp dir at a time
         """
         wd = utils.get_working_dir()
-        tmp_dir = os.path.join(wd, ".datagit/tmp")
+        tmp_dir = os.path.join(wd, ".datagit", "tmp")
         if os.path.isdir(tmp_dir):
             shutil.rmtree(tmp_dir)
         os.mkdir(tmp_dir)
@@ -160,7 +160,7 @@ class Storage:
     def update_workingdir(self, versionID: int, dir: str) -> None:
         wd = utils.get_working_dir()
         saved_version_dir = os.path.join(
-            wd, ".datagit/versions/%d.pk" % versionID)
+            wd, ".datagit", "versions", "%d.pk" % versionID)
         directory = None
         with open(saved_version_dir, "rb") as f:
             directory = pickle.load(f)
@@ -176,7 +176,7 @@ class Storage:
 
         wd = utils.get_working_dir()
         saved_version_dir = os.path.join(
-            wd, ".datagit/versions/%d.pk" % versionID)
+            wd, ".datagit", "versions", "%d.pk" % versionID)
         with open(saved_version_dir, "wb") as f:
             pickle.dump(d, f)
 
