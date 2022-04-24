@@ -12,7 +12,7 @@ import shutil
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
-        self.__root_dir: str = storage.get_working_dir()  # 这需要storage比Stage先初始化
+        self.__root_dir: str = utils.get_working_dir()
         self.__dir_tree: Directory = Directory()
         self.__dir_tree.construct(self.__root_dir)
 
@@ -33,7 +33,7 @@ class Stage():
         assert(os.path.exists(dir))
         new_dir_tree = Directory()
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
-        dir_relpath = os.path.relpath(dir, self.root_path)  # 转为相对路径
+        dir_relpath = os.path.relpath(dir, self.__root_dir)  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
         dirs = dir_relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
@@ -59,7 +59,11 @@ class Stage():
             u是self.dir_tree的子孙结点,是dir的目录树
             '''
             add_list, remove_list = new_dir_tree.get_update_list(u, cur_path)
-            u.copy(new_dir_tree)
+            if len(dirs) == 1:
+                # 如果dir就是根目录
+                self.__dir_tree = new_dir_tree
+            else:
+                u.copy(new_dir_tree)
         elif stop == len(dirs) - 1:
             '''
             dir在stage中不存在,但dir的上一级目录在stage中存在

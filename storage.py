@@ -58,7 +58,9 @@ class Storage:
         Initialize a repo in current dir, 
         create all required directories for a repo
         """
-
+        if utils.get_working_dir() != None:
+            # 仓库已存在，可能需要输出错误信息
+            return
         os.mkdir(".datagit")
         os.mkdir(".datagit/data")
         os.mkdir(".datagit/repo")
