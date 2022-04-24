@@ -160,7 +160,7 @@ class Stage():
         '''
         新建并返回一个Version实例
         '''
-        new_version = Version(parentID, id, self.__modify_sequence, message)
+        new_version = Version(parentID, id, self.__modify_sequence.copy(), message)
         self.__modify_sequence.clear()
         return new_version
 

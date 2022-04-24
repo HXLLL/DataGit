@@ -33,7 +33,7 @@ class Update(Modify):
                 if not os.path.exists(file_path):
                     os.makedirs(file_path)
                 git_file_name_0 = utils.get_working_dir()
-                git_file_name_1 = storage.get_file(atuple[1].hash)
+                git_file_name_1 = storage.get_file(atuple[1].get_hash())
                 shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), atuple[0])
             
         for item in self.__remove_list:
