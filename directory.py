@@ -22,7 +22,7 @@ class Directory():
         self.__dirs[dir.get_name()] = dir
     
     def set_file(self, file: Blob) -> None:
-        self.__files[file.name] = file
+        self.__files[file.get_name()] = file
 
     def unfold(self, root_path: str) -> List[Tuple[str, Blob]]:
         '''
@@ -79,17 +79,17 @@ class Directory():
         remove_list = []
 
         for new_file in self.__files.values():
-            filename = new_file.name
+            filename = new_file.get_name()
             if filename in old_files:
                 old_file = old_files[filename]
-                if new_file.hash != old_file.hash:
+                if new_file.get_hash() != old_file.get_hash():
                     remove_list.append((relpath, old_file))
                     add_list.append((relpath, new_file))
             else:
                 add_list.append((relpath, new_file))
         
         for old_file in old_files.values():
-            filename = old_file.name
+            filename = old_file.get_name()
             if filename not in self.__files:
                 remove_list.append((relpath, old_file))
         
