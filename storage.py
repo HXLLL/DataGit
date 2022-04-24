@@ -133,7 +133,7 @@ class Storage:
         wd = utils.get_working_dir()
         for name, f in d.get_files().items():
             if isinstance(f, Blob):
-                h = f.hash
+                h = f.get_hash()
                 f_dir = self.get_file(h)
                 shutil.copy(f_dir, os.path.join(dir, name))
             else:
