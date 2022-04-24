@@ -32,6 +32,7 @@ class Stage():
         '''
         assert(os.path.exists(dir))
         new_dir_tree = Directory()
+        print('dir =', dir)
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
         dir_relpath = os.path.relpath(dir, self.__root_dir)  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
@@ -94,6 +95,7 @@ class Stage():
         '''
         参数是绝对路径
         '''
+        print(dir)
         assert(utils.in_working_dir(dir))
 
         add_list, del_list = self.__scan_update(dir)
