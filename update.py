@@ -1,5 +1,6 @@
 from modify import Modify
 from storage import storage
+import utils
 import os
 import shutil
 
@@ -23,17 +24,17 @@ class Update(Modify):
         将Update对应文件增删应用到working_dir目录下
         '''
         for item in self.__add_list:
-            Files = item.unfold(working_dir)
+            Files = item[1].unfold(working_dir)
             for atuple in Files:
-                file_path, file_name = os.path.split(atuple[0])
+                file_path, _ = os.path.split(atuple[0])
                 if not os.path.exists(file_path):
                     os.makedirs(file_path)
-                git_file_name_0 = storage.get_working_dir()
+                git_file_name_0 = utils.get_working_dir()
                 git_file_name_1 = storage.get_file(atuple[1].hash)
                 shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), atuple[0])
             
         for item in self.__remove_list:
-            path = os.path.join(working_dir, item)
+            path = os.path.join(working_dir, item[0])
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
