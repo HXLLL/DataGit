@@ -47,19 +47,25 @@ class Directory():
         self.__dirs = new_dir.dirs
         
     def build_dict(self, working_dir: str) -> None:
+        '''
+        获取working_dir下的子目录信息, 构造self.__dirs与self.__files
+        '''
         for item in os.listdir(working_dir):
             abs_path = os.path.join(working_dir, item)
             if os.path.isdir(abs_path):
                 if item != '.datagit':
-                    self.__files[item] = Directory(item)
+                    self.__dirs[item] = Directory(item)
             else:
                 self.__files[item] = Blob(item)
     
     def construct(self, working_dir: str) -> None:
+        '''
+        获得working_dir作为根目录的目录结构
+        '''
         _, self.__name = os.path.split(working_dir)
         self.build_dict(working_dir)
-        for item in self.__files:
-            item.construct(os.path.join(working_dir, item))
+        for item in self.__dirs:
+            self.__dirs[item].construct(os.path.join(working_dir, item))
     
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''
@@ -103,4 +109,3 @@ class Directory():
                 remove_list.append((relpath, old_dir))
         
         return add_list, remove_list
-    
