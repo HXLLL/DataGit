@@ -76,7 +76,7 @@ class Directory():
         '''
         _, self.__name = os.path.split(working_dir)
         self.build_dict(working_dir)
-        print('dirs', self.__dirs)
+        # print('dirs', self.__dirs)
         for item in self.__dirs:
             self.__dirs[item].construct(os.path.join(working_dir, item))
     
