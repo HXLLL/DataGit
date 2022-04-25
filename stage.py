@@ -95,8 +95,8 @@ class Stage():
         参数是绝对路径
         '''
         # print(dir)
-        assert(utils.in_working_dir(dir))
-
+        if not utils.in_working_dir(dir):
+            raise ValueError('path not in a valid repo')
         add_list, del_list = self.__scan_update(dir)
         upd = Update(add_list, del_list)
         self.__modify_sequence.append(upd)
@@ -112,8 +112,10 @@ class Stage():
         3.建立dst文件夹的Directory结构
         4.把dir结构扔到modify_sequence里面
         '''
-        assert(utils.in_working_dir(dst))
-        assert os.path.exists(src)
+        if not utils.in_working_dir(dst):
+            raise ValueError('dst path not in a valid repo')
+        if not os.path.exists(src):
+            raise ValueError('src not a valid path')
         if not os.path.exists(dst):
             os.makedirs(dst)
 
