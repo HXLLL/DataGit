@@ -118,6 +118,9 @@ def main():
     parser_branch.set_defaults(func=func_branch)
 
     args = parser.parse_args(sys.argv[1:])  # the first argument is main.py
+    if not 'func' in args:
+        parser.print_help()
+        sys.exit(1)
     args.func(args)
 
 if __name__ == "__main__":

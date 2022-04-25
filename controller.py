@@ -1,3 +1,4 @@
+import sys
 import os
 from storage import storage
 from repo import Repo
@@ -29,7 +30,9 @@ def update(dir:str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    # get all file's hash values from stage
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
     dir = trans_path(dir)
     if os.path.exists(dir):
@@ -48,6 +51,10 @@ def add(src: str, dst: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
     src = trans_path(src)
     dst = trans_path(dst)
     if os.path.exists(src):
@@ -65,6 +72,10 @@ def add(src: str, dst: str) -> None:
 def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
+
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
     dir1 = trans_path(dir1)
     dir2 = trans_path(dir2)
@@ -96,11 +107,20 @@ def commit(msg: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    if stage.empty():
-        raise "Nothing to commit"
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
+    if stage.empty():
+        print("Nothing to commit")
+        sys.exit(1)
+
+    try:
+        repo.commit(stage, msg)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     print(msg)
-    repo.commit(stage, msg)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -109,6 +129,10 @@ def commit(msg: str) -> None:
 def checkout_v(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
+
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
     repo.checkout(obj, False)
     stage.reset()
@@ -121,6 +145,10 @@ def checkout_b(obj: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
     repo.checkout(obj, True)
     stage.reset()
 
@@ -132,7 +160,16 @@ def save(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.save(obj)
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
+    try:
+        repo.save(obj)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
+
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -142,7 +179,15 @@ def unsave(obj: int) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.unsave(obj)
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
+    try:
+        repo.unsave(obj)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -151,6 +196,10 @@ def unsave(obj: int) -> None:
 def adjust() -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
+
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
     repo.adjust()
 
@@ -161,6 +210,10 @@ def adjust() -> None:
 def log() -> str:
     repo = storage.load_repo()
     stage = storage.load_stage()
+
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
 
     log_info = repo.log()
 
@@ -173,6 +226,10 @@ def status() -> str:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
     status_info = repo.status()
 
     storage.save_repo(repo)
@@ -183,7 +240,15 @@ def branch(name: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
-    repo.branch(name)
+    if repo is None or stage is None:
+        print("Error: Not in a valid repository")
+        sys.exit(1)
+
+    try:
+        repo.branch(name)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
 
     storage.save_repo(repo)
     storage.save_stage(stage)

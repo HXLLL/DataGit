@@ -30,16 +30,24 @@ class Transform(Modify):
             cmd = git_script_entry + " " + os.path.join(working_dir, self.__script_working_dir)
             save_dir = os.getcwd()
             os.chdir(git_script_dir)
-            os.system(cmd)
-            os.chdir(save_dir)
+            try:
+                os.system(cmd)
+            except Exception as e:
+                raise e
+            finally:
+                os.chdir(save_dir)
         else:
             save_dir = os.getcwd()
             os.chdir(git_script_dir)
-            for root, dir, files in os.walk(working_dir):
-                for afile in files:
-                    cmd = git_script_entry + " " + os.path.join(root, afile)
-                    os.system(cmd)
-            os.chdir(save_dir)
+            try:
+                for root, dir, files in os.walk(working_dir):
+                    for afile in files:
+                        cmd = git_script_entry + " " + os.path.join(root, afile)
+                        os.system(cmd)
+            except Exception as e:
+                raise e
+            finally:
+                os.chdir(save_dir)
 
     def info(self) -> str:
         return "transform: %s" % self.__message
