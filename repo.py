@@ -37,7 +37,7 @@ class Repo:
             assert type(b).__name__ == 'str'
             pid = self.branch_map[b]
         else:
-            raise "can't commit in detached HEAD mode"
+            raise ValueError("can't commit in detached HEAD mode")
 
         id = self.__new_version_id()
         v = stage.commit(pid, id, message)
@@ -94,7 +94,7 @@ class Repo:
         save a version.
         """
         if VersionID in self.saved_version:
-            raise "This version has already been saved"
+            raise ValueError("This version has already been saved")
 
         dest_version = self.version_map[VersionID] # exit if VersionID not exists
         src_version, route = self.__find_saved_dataSet(dest_version)
@@ -116,7 +116,7 @@ class Repo:
         unsave a version.
         """
         if not VersionID in self.saved_version:
-            raise "This version has not been saved"
+            raise ValueError("This version has not been saved")
 
         storage.delete_version(VersionID)
         self.saved_version.delete(VersionID)
@@ -172,7 +172,7 @@ class Repo:
 # ------------------ branch ---------------
     def branch(self, branch_name) -> None:
         if branch_name in self.branch_map:
-            raise Exception("Branch already exists")
+            raise ValueError("Branch already exists")
 
         if self.detached_head:
             self.branch_map[branch_name] = self.HEAD

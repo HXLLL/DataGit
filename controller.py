@@ -115,8 +115,12 @@ def commit(msg: str) -> None:
         print("Nothing to commit")
         sys.exit(1)
 
+    try:
+        repo.commit(stage, msg)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     print(msg)
-    repo.commit(stage, msg)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -160,7 +164,12 @@ def save(obj: int) -> None:
         print("Error: Not in a valid repository")
         sys.exit(1)
 
-    repo.save(obj)
+    try:
+        repo.save(obj)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
+
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -174,7 +183,11 @@ def unsave(obj: int) -> None:
         print("Error: Not in a valid repository")
         sys.exit(1)
 
-    repo.unsave(obj)
+    try:
+        repo.unsave(obj)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
