@@ -172,7 +172,7 @@ class Repo:
 # ------------------ branch ---------------
     def branch(self, branch_name) -> None:
         if branch_name in self.branch_map:
-            raise "Branch already exists"
+            raise Exception("Branch already exists")
 
         if self.detached_head:
             self.branch_map[branch_name] = self.HEAD
