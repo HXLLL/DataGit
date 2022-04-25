@@ -165,8 +165,8 @@ class Stage():
 
     def status(self) -> str:
         res = ""
-        for m in self.__modify_sequence:
-            res += m.info() + "\n"
+        for i,m in enumerate(self.__modify_sequence):
+            res += ("Update %d" % i) + m.info() + "\n"
         if res == "":
             return "The working tree is clean."
         else:
