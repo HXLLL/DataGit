@@ -22,19 +22,36 @@ class Update(Modify):
                 h = storage.save_file(atuple[0])
                 atuple[1].set_hash(h)
     
+    
     def apply(self, working_dir):
         '''
         将Update对应文件增删应用到working_dir目录下
         '''
+        def move_file(self, base_path, afile) -> None:
+            git_file_name_0 = utils.get_working_dir()
+            git_file_name_1 = storage.get_file(afile.get_hash())
+            shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), base_path)
+
+        def move_dir(self, base_path, dir) -> None:
+            '''
+            将dir类下的目录结构还原,文件加入working_dir目录下
+            '''
+            for item in dir.get_dirs():
+                abs_path = os.path.join(base_path, item.get_name())
+                if not os.path.exists(abs_path):
+                    os.makedirs(abs_path)
+                move_dir(abs_path, item)
+            
+            for item in dir.get_files():
+                move_file(os.path.join(base_path, item.get_name()), item)
+
         for item in self.__add_list:
-            Files = item[1].unfold(working_dir)
-            for atuple in Files:
-                file_path, _ = os.path.split(atuple[0])
-                if not os.path.exists(file_path):
-                    os.makedirs(file_path)
-                git_file_name_0 = utils.get_working_dir()
-                git_file_name_1 = storage.get_file(atuple[1].get_hash())
-                shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), atuple[0])
+            item_abs_path = os.path.join(working_dir, item[0])
+            if os.path.isdir(item_abs_path):
+                move_dir(item_abs_path, item[1])
+            else:
+                move_file(item_abs_path, item)
+
             
         for item in self.__remove_list:
             path = os.path.join(working_dir, item[0])

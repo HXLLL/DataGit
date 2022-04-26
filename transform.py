@@ -51,3 +51,5 @@ class Transform(Modify):
 
     def info(self) -> str:
         return "transform: %s" % self.__message
+
+
