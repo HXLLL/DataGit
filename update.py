@@ -39,13 +39,13 @@ class Update(Modify):
             '''
             将dir类下的目录结构还原,文件加入working_dir目录下
             '''
-            for item in dir.get_dirs():
+            for item in dir.get_dirs().values():
                 abs_path = os.path.join(base_path, item.get_name())
                 if not os.path.exists(abs_path):
                     os.makedirs(abs_path)
                 move_dir(abs_path, item)
             
-            for item in dir.get_files():
+            for item in dir.get_files().values():
                 move_file(os.path.join(base_path, item.get_name()), item)
 
         for item in self.__add_list:
@@ -53,7 +53,7 @@ class Update(Modify):
             if os.path.isdir(item_abs_path):
                 move_dir(item_abs_path, item[1])
             else:
-                move_file(item_abs_path, item)
+                move_file(item_abs_path, item[1])
 
             
         for item in self.__remove_list:
