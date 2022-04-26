@@ -25,7 +25,10 @@ class Storage:
         """
         load repo from .datagit/repo
         """
-        repo_path = os.path.join(utils.get_working_dir(), '.datagit', 'repo', 'repo.pk')
+        wd = utils.get_working_dir()
+        if wd is None:
+            return None
+        repo_path = os.path.join(wd, '.datagit', 'repo', 'repo.pk')
         with open(repo_path, 'rb') as repo_file:
             return pickle.load(repo_file)
         return None
@@ -34,7 +37,10 @@ class Storage:
         """
         load stage from .datagit/repo
         """
-        stage_path = os.path.join(utils.get_working_dir(), '.datagit', 'stage', 'stage.pk')
+        wd = utils.get_working_dir()
+        if wd is None:
+            return None
+        stage_path = os.path.join(wd, '.datagit', 'stage', 'stage.pk')
         with open(stage_path, 'rb') as stage_file:
             return pickle.load(stage_file)
         return None
