@@ -138,21 +138,17 @@ class Repo:
     
 # ------------------ log ---------------
     def find_log(self, current_version:Version, prefix:str):
-        res_branch = '('
-        for branch_name in self.branch_map.keys():
-            if self.branch_map[branch_name] == current_version.id:
-                if res_branch == '(':
-                    res_branch += branch_name
-                else:
-                    res_branch += ', ' + branch_name
-                if isinstance(self.HEAD, str) and self.HEAD == branch_name:
-                    res_branch += " <- HEAD"
-        res_branch += ')'
+        cur_id = current_version.id
+        cur_branches = [k for k,v in self.branch_map.items() if v == cur_id]
+        if self.detached_head and self.HEAD == cur_id:
+            cur_branches.append('HEAD')
+        elif not self.detached_head and self.HEAD in cur_branches:
+            idx = cur_branches.index(self.HEAD)
+            cur_branches[idx] = "%s <- HEAD" % self.HEAD
+        res_branch = "(" + ", ".join(cur_branches) + ")"
         res = prefix + "* %d%s: %s\n" % (current_version.id, res_branch, current_version.message)
-        child_list = []
-        for child in self.versions:
-            if child.parent == current_version.id:
-                child_list.append(child)
+
+        child_list = [c for c in self.versions if c.parent == cur_id]
         if len(child_list) == 0:
             return res
         for child in child_list[:-1]:
