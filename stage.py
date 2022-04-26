@@ -94,8 +94,11 @@ class Stage():
         if not utils.in_working_dir(dir):
             raise ValueError('path not in a valid repo')
         add_list, del_list = self.__scan_update(dir)
-        upd = Update(add_list, del_list)
-        self.__modify_sequence.append(upd)
+        if not add_list and not del_list:
+            print('Nothing to update')
+        else:
+            upd = Update(add_list, del_list)
+            self.__modify_sequence.append(upd)
     
     def add(self, src: str, dst: str) -> None:
         '''
@@ -160,8 +163,8 @@ class Stage():
                 u.set_dir(new_dir_tree)
         else:
             u.del_dir(os.path.split(data_dir)[1])  # 目录没了
-        print('transform finished')
-        print(self.__dir_tree.unfold('transform_test'))
+        # print('transform finished')
+        # print(self.__dir_tree.unfold('transform_test'))
     
     def commit(self, parentID: int, id: int, message: str) -> Version:
         '''
@@ -174,7 +177,7 @@ class Stage():
     def status(self) -> str:
         res = ""
         for i,m in enumerate(self.__modify_sequence):
-            res += ("Update %d" % i) + m.info() + "\n"
+            res += ("Modify %d:\n" % i) + m.info() + "\n"
         if res == "":
             return "The working tree is clean."
         else:
