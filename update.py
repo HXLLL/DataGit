@@ -58,7 +58,7 @@ class Update(Modify):
 
             
         for item in self.__remove_list:
-            path = os.path.join(working_dir, item[0])
+            path = os.path.join(working_dir, item[0], item[1].get_name())
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
