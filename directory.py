@@ -28,6 +28,9 @@ class Directory():
     
     def set_file(self, file: Blob) -> None:
         self.__files[file.get_name()] = file
+    
+    def get_type(self) -> str:
+        return "directory"
 
     def unfold(self, root_path: str) -> List[Tuple[str, Blob]]:
         '''

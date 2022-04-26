@@ -17,6 +17,9 @@ class Blob:
 
     def set_hash(self, hash:str) -> None:
         self.__hash = hash
+    
+    def get_type(self) -> str:
+        return "blob"
 
     def unfold(self, root_path: str) -> List[Tuple[str, 'Blob']]:
         return [(os.path.join(root_path, self.__name), self)]
