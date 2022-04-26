@@ -70,10 +70,14 @@ class Repo:
         """
 
         if to_branch:
+            if not dst in self.branch_map:
+                raise ValueError("Invalid branch name %s" % dst)
             self.HEAD = dst
             self.detached_head = False
             dst = self.branch_map[dst]
         else:
+            if not dst in self.version_map:
+                raise ValueError("Invalid version ID %d" % dst)
             self.detached_head = True
             self.HEAD = dst
 
