@@ -70,10 +70,14 @@ class Repo:
         """
 
         if to_branch:
+            if not dst in self.branch_map:
+                raise ValueError("Invalid branch name %s" % dst)
             self.HEAD = dst
             self.detached_head = False
             dst = self.branch_map[dst]
         else:
+            if not dst in self.version_map:
+                raise ValueError("Invalid version ID %d" % dst)
             self.detached_head = True
             self.HEAD = dst
 
@@ -134,19 +138,17 @@ class Repo:
     
 # ------------------ log ---------------
     def find_log(self, current_version:Version, prefix:str):
-        res_branch = '('
-        for branch_name in self.branch_map.keys():
-            if self.branch_map[branch_name] is current_version.id:
-                if res_branch == '(':
-                    res_branch += branch_name
-                else:
-                    res_branch += ',' + branch_name
-        res_branch += ')'
-        res = prefix + "* %d%s: %s\n" % (current_version.id, res_branch, current_version.message)
-        child_list = []
-        for child in self.versions:
-            if child.parent is current_version.id:
-                child_list.append(child)
+        cur_id = current_version.id
+        cur_branches = [k for k,v in self.branch_map.items() if v == cur_id]
+        if self.detached_head and self.HEAD == cur_id:
+            cur_branches.append('HEAD')
+        elif not self.detached_head and self.HEAD in cur_branches:
+            idx = cur_branches.index(self.HEAD)
+            cur_branches[idx] = "%s <- HEAD" % self.HEAD
+        res_branch = "(" + ", ".join(cur_branches) + ")"
+        res = prefix + "* %d %s: %s\n" % (current_version.id, res_branch, current_version.message)
+
+        child_list = [c for c in self.versions if c.parent == cur_id]
         if len(child_list) == 0:
             return res
         for child in child_list[:-1]:

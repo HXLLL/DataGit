@@ -59,11 +59,7 @@ class Stage():
             u是self.dir_tree的子孙结点,是dir的目录树
             '''
             add_list, remove_list = new_dir_tree.get_update_list(u, cur_path)
-            if len(dirs) == 1:
-                # 如果dir就是根目录
-                self.__dir_tree = new_dir_tree
-            else:
-                u.copy(new_dir_tree)
+            u.copy(new_dir_tree)
         elif stop == len(dirs) - 1:
             '''
             dir在stage中不存在,但dir的上一级目录在stage中存在
@@ -98,8 +94,11 @@ class Stage():
         if not utils.in_working_dir(dir):
             raise ValueError('path not in a valid repo')
         add_list, del_list = self.__scan_update(dir)
-        upd = Update(add_list, del_list)
-        self.__modify_sequence.append(upd)
+        if not add_list and not del_list:
+            print('Nothing to update')
+        else:
+            upd = Update(add_list, del_list)
+            self.__modify_sequence.append(upd)
     
     def add(self, src: str, dst: str) -> None:
         '''
@@ -134,26 +133,38 @@ class Stage():
         self.update(dst)
 
     
-    def transform(self, dir1: str, entry: str, isMap: int, dir2: str, message: str):
+    def transform(self, code_dir: str, entry: str, isMap: int, data_dir: str, message: str):
         '''
         新建一个Transform实例,添加到modify_sequnece中,并应用到工作目录
         dir1是代码目录,dir2是数据目录,都是绝对路径
         '''
-
-        m = Transform(isMap, dir1, entry, dir2, message)
+        if not os.path.exists(code_dir):
+            raise ValueError('code directory not exist')
+        if not os.path.exists(data_dir):
+            raise ValueError('data directory not exist')
+        relpath = os.path.relpath(data_dir, self.__root_dir)
+        relpath = os.path.normpath(relpath)  # 转为标准格式
+        m = Transform(isMap, code_dir, entry, relpath, message)
         self.__modify_sequence.append(m)
         m.apply(self.__root_dir)
-        new_dir_tree = Directory()
-        new_dir_tree.construct(dir2)
-        relpath = os.path.relpath(dir2, self.__root_dir)
-        relpath = os.path.normpath(relpath)  # 转为标准格式
         dirs = relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
             del dirs[0]
         u = self.__dir_tree
         for dirname in dirs[:-1]:
             u = u.enter(dirname)
-        u.set_dir(new_dir_tree)  # 更新transform的目录的状态到目录树上
+        if os.path.exists(data_dir):
+            new_dir_tree = Directory()
+            new_dir_tree.construct(data_dir)
+            # 更新transform的目录的状态到目录树上
+            if len(dirs) == 0:  # 如果transform的是根目录
+                self.__dir_tree = new_dir_tree
+            else:
+                u.set_dir(new_dir_tree)
+        else:
+            u.del_dir(os.path.split(data_dir)[1])  # 目录没了
+        # print('transform finished')
+        # print(self.__dir_tree.unfold('transform_test'))
     
     def commit(self, parentID: int, id: int, message: str) -> Version:
         '''
@@ -166,7 +177,7 @@ class Stage():
     def status(self) -> str:
         res = ""
         for i,m in enumerate(self.__modify_sequence):
-            res += ("Update %d" % i) + m.info() + "\n"
+            res += ("Modify %d:\n" % i) + m.info() + "\n"
         if res == "":
             return "The working tree is clean."
         else:

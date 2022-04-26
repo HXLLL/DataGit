@@ -28,6 +28,9 @@ class Update(Modify):
         将Update对应文件增删应用到working_dir目录下
         '''
         def move_file(self, base_path, afile) -> None:
+            '''
+            还原单个文件
+            '''
             git_file_name_0 = utils.get_working_dir()
             git_file_name_1 = storage.get_file(afile.get_hash())
             shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), base_path)
@@ -63,6 +66,6 @@ class Update(Modify):
     def info(self) -> str:
         def file2str(f):
             return os.path.join(f[0], f[1].get_name())
-        res = "add files: " + ", ".join(map(file2str, self.__add_list)) \
-        + "\n" + "del files: " + ", ".join(map(file2str, self.__remove_list))
+        res = "    add files: " + ", ".join(map(file2str, self.__add_list)) \
+        + "\n" + "    del files: " + ", ".join(map(file2str, self.__remove_list))
         return res

@@ -19,7 +19,11 @@ def trans_path(dir: str) -> str:
 
 def init() -> None:
     repo = Repo()
-    repo.init()
+    try:
+        repo.init()
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     storage.save_repo(repo)
 
     stage = Stage()
@@ -134,7 +138,11 @@ def checkout_v(obj: int) -> None:
         print("Error: Not in a valid repository")
         sys.exit(1)
 
-    repo.checkout(obj, False)
+    try:
+        repo.checkout(obj, False)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     stage.reset()
 
     storage.save_repo(repo)
@@ -149,7 +157,11 @@ def checkout_b(obj: str) -> None:
         print("Error: Not in a valid repository")
         sys.exit(1)
 
-    repo.checkout(obj, True)
+    try:
+        repo.checkout(obj, True)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     stage.reset()
 
     storage.save_repo(repo)
