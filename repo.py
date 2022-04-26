@@ -146,7 +146,7 @@ class Repo:
             idx = cur_branches.index(self.HEAD)
             cur_branches[idx] = "%s <- HEAD" % self.HEAD
         res_branch = "(" + ", ".join(cur_branches) + ")"
-        res = prefix + "* %d%s: %s\n" % (current_version.id, res_branch, current_version.message)
+        res = prefix + "* %d %s: %s\n" % (current_version.id, res_branch, current_version.message)
 
         child_list = [c for c in self.versions if c.parent == cur_id]
         if len(child_list) == 0:
