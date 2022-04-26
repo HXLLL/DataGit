@@ -50,4 +50,4 @@ class Transform(Modify):
                 os.chdir(save_dir)
 
     def info(self) -> str:
-        return "transform: %s" % self.__message
+        return f"transform in directory[{self.__script_working_dir}]: {self.__message}"

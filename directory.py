@@ -21,6 +21,11 @@ class Directory():
     def set_dir(self, dir: 'Directory') -> None:
         self.__dirs[dir.get_name()] = dir
     
+    def del_dir(self, dirname: str) -> None:
+        # 如果dirname存在，就删除
+        if dirname in self.__dirs:
+            self.__dirs.pop(dirname)
+    
     def set_file(self, file: Blob) -> None:
         self.__files[file.get_name()] = file
 
