@@ -68,7 +68,7 @@ class Storage:
         """
         if utils.get_working_dir() != None:
             # 仓库已存在，可能需要输出错误信息
-            return
+            raise ValueError("Already in a repo")
         os.mkdir(".datagit")
         os.mkdir(os.path.join(".datagit", "data"))
         os.mkdir(os.path.join(".datagit", "repo"))

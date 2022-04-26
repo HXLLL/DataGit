@@ -19,7 +19,11 @@ def trans_path(dir: str) -> str:
 
 def init() -> None:
     repo = Repo()
-    repo.init()
+    try:
+        repo.init()
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
     storage.save_repo(repo)
 
     stage = Stage()
