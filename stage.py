@@ -12,8 +12,7 @@ import shutil
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
-        self.__root_dir: str = utils.get_working_dir()
-        root_dirname = os.path.split(self.__root_dir)[1]
+        root_dirname = os.path.split(utils.get_working_dir())[1]
         self.__dir_tree: Directory = Directory(root_dirname)
 
     def __scan_update(self, dir: str) -> Tuple[list, list]:
@@ -33,7 +32,7 @@ class Stage():
         assert(os.path.exists(dir))
         new_dir_tree = Directory()
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
-        dir_relpath = os.path.relpath(dir, self.__root_dir)  # 转为相对路径
+        dir_relpath = os.path.relpath(dir, utils.get_working_dir())  # 转为相对路径
         dir_relpath = os.path.normpath(dir_relpath)  # 转为标准格式
         dirs = dir_relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
@@ -153,7 +152,7 @@ class Stage():
             raise ValueError('code directory not exist')
         if not os.path.exists(data_dir):
             raise ValueError('data directory not exist')
-        relpath = os.path.relpath(data_dir, self.__root_dir)
+        relpath = os.path.relpath(data_dir, utils.get_working_dir())
         relpath = os.path.normpath(relpath)  # 转为标准格式
 
         # 在transform前进行update ./data_dir, 保存文件变化
@@ -161,7 +160,7 @@ class Stage():
 
         m = Transform(isMap, code_dir, entry, relpath, message)
         self.__modify_sequence.append(m)
-        m.apply(self.__root_dir)
+        m.apply(utils.get_working_dir())
         dirs = relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
             del dirs[0]
@@ -202,7 +201,7 @@ class Stage():
     def reset(self) -> None:
         # TODO: prompt user when modify_sequence is not empty
         self.__dir_tree = Directory(self.__dir_tree.get_name())
-        self.__dir_tree.construct(self.__root_dir)
+        self.__dir_tree.construct(utils.get_working_dir())
 
         self.__modify_sequence = []
 
