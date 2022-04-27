@@ -3,6 +3,7 @@ from storage import storage
 import utils
 import os
 import shutil
+from tqdm import tqdm
 
 class Update(Modify):
     def __init__(self, add_list: list, remove_list: list):
@@ -61,13 +62,19 @@ class Update(Modify):
             else:
                 os.remove(path)
 
+        import pdb 
+
+        pdb.set_trace()
+        bar = tqdm(total = sum([x[1].size() for x in self.__add_list]))
+
         for item in self.__add_list:
             item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
             # print(item_abs_path, item[0], item[1].get_name())
             if item[1].get_type() == 'directory':
-                move_dir(item_abs_path, item[1])
+                move_dir(item_abs_path, item[1], bar)
             else:
-                move_file(item_abs_path, item[1])
+                move_file(item_abs_path, item[1], bar)
+        bar.close()
 
 
     def info(self) -> str:

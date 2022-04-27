@@ -133,3 +133,6 @@ class Directory():
                 remove_list.append((relpath, old_dir))
         
         return add_list, remove_list
+
+    def size(self) -> int:
+        return len(self.unfold("."))

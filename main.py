@@ -26,10 +26,10 @@ def func_commit(args: argparse.Namespace) -> None:
 
 def func_checkout(args: argparse.Namespace) -> None:
     if (args.v == None) and (args.b == None):
-        print("fault: you should give -v or -b, not neither of them!")
+        print("Error: you should give -v or -b, not neither of them!")
         return
     if (args.v != None) and (args.b != None):
-        print("fault: you should give -v or -b, not both of them!")
+        print("Error: you should give -v or -b, not both of them!")
         return
     if args.v != None:
         controller.checkout_v(args.v)

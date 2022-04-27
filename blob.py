@@ -24,3 +24,6 @@ class Blob:
     def unfold(self, root_path: str) -> List[Tuple[str, 'Blob']]:
         return [(os.path.join(root_path, self.__name), self)]
     
+    def size(self) -> int:
+        return 1
+    
