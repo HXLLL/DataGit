@@ -16,9 +16,10 @@ class Update(Modify):
         #保存add_list内的文件
         for item in self.__add_list:
             # print(item[1])
-            Files = item[1].unfold(utils.get_working_dir())
+            Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
             # print(Files)
             for atuple in Files:
+                # print('atuple[0]:', atuple[0])
                 h = storage.save_file(atuple[0])
                 atuple[1].set_hash(h)
     
@@ -27,6 +28,11 @@ class Update(Modify):
         '''
         将Update对应文件增删应用到working_dir目录下
         '''
+        # print('apply:')
+        # for a in self.__add_list:
+        #     print(a[0], a[1].unfold('add_test'))
+        # for a in self.__remove_list:
+        #     print(a[0], a[1].unfold('del_test'))
         def move_file(base_path, afile) -> None:
             '''
             还原单个文件
@@ -48,6 +54,13 @@ class Update(Modify):
             for item in adir.get_files().values():
                 move_file(os.path.join(base_path, item.get_name()), item)
 
+        for item in self.__remove_list:
+            path = os.path.join(working_dir, item[0], item[1].get_name())
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+
         for item in self.__add_list:
             item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
             # print(item_abs_path, item[0], item[1].get_name())
@@ -56,13 +69,6 @@ class Update(Modify):
             else:
                 move_file(item_abs_path, item[1])
 
-            
-        for item in self.__remove_list:
-            path = os.path.join(working_dir, item[0], item[1].get_name())
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.remove(path)
 
     def info(self) -> str:
         def file2str(f):
