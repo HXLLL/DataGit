@@ -86,7 +86,7 @@ class Stage():
 
 
 
-    def update(self, dir: str, call_from: str = 'other') -> None:
+    def update(self, dir: str, report_empty=True) -> None:
         '''
         参数是绝对路径
         '''
@@ -95,7 +95,8 @@ class Stage():
             raise ValueError('path not in a valid repo')
         add_list, del_list = self.__scan_update(dir)
         if not add_list and not del_list:
-            print('Nothing to update')
+            if report_empty:
+                print('Nothing to update')
         else:
             print('add_list:', add_list)
             for item in add_list:
@@ -156,7 +157,7 @@ class Stage():
         relpath = os.path.normpath(relpath)  # 转为标准格式
 
         # 在transform前进行update ./data_dir, 保存文件变化
-        self.update(data_dir, 'self.transform')
+        self.update(data_dir, report_empty=False)
 
         m = Transform(isMap, code_dir, entry, relpath, message)
         self.__modify_sequence.append(m)

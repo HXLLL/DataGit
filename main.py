@@ -124,7 +124,7 @@ def main():
 
     try:
         args.func(args)
-    except ValueError as e:
+    except (ValueError, RuntimeError) as e:
         print("Error:", e)
         sys.exit(1)
 
