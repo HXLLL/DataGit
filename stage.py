@@ -98,11 +98,11 @@ class Stage():
                 print('Nothing to update')
         else:
             # print('add_list:', add_list)
-            for item in add_list:
-                print(item[1].get_name())
+            # for item in add_list:
+            #     print(item[1].get_name())
             # print('del_list:', del_list)
-            for item in del_list:
-                print(item[1].get_name())
+            # for item in del_list:
+            #     print(item[1].get_name())
             upd = Update(add_list, del_list)
             self.__modify_sequence.append(upd)
     
