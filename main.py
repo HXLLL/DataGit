@@ -121,7 +121,12 @@ def main():
     if not 'func' in args:
         parser.print_help()
         sys.exit(1)
-    args.func(args)
+
+    try:
+        args.func(args)
+    except ValueError as e:
+        print("Error:", e)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

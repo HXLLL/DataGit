@@ -19,11 +19,7 @@ def trans_path(dir: str) -> str:
 
 def init() -> None:
     repo = Repo()
-    try:
-        repo.init()
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.init()
     storage.save_repo(repo)
 
     stage = Stage()
@@ -35,17 +31,14 @@ def update(dir:str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
     dir = trans_path(dir)
-    if os.path.exists(dir):
-        if os.path.isdir(dir):
-            stage.update(dir)
-        else:
-            print("fault: datagit update <dir>: <dir> should lead to a dir")
-    else:
-        print("fault: datagit update <dir>: <dir> should exist")
+    if not os.path.exists(dir):
+        raise ValueError("datagit update <dir>: <dir> should exist")
+    if not os.path.isdir(dir):
+        raise ValueError("datagit update <dir>: <dir> should lead to a dir")
+    stage.update(dir)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -56,18 +49,15 @@ def add(src: str, dst: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
     src = trans_path(src)
     dst = trans_path(dst)
-    if os.path.exists(src):
-        if os.path.isdir(src):
-            stage.add(src, dst)
-        else:
-            print("fault: datagit add <src> <dst>: <src> and <dst> should lead to dir")
-    else:
-        print("fault: datagit add <src> <dst>: <src> and <dst> should exist")
+    if not os.path.exists(src):
+        raise ValueError("datagit add <src> <dst>: <src> should exist")
+    if not os.path.isdir(src):
+        raise ValueError("datagit add <src> <dst>: <src> should lead to dir")
+    stage.add(src, dst)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -78,30 +68,25 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
     dir1 = trans_path(dir1)
     dir2 = trans_path(dir2)
-    if os.path.exists(dir1) and os.path.exists(dir2):
-        if os.path.isdir(dir1) and os.path.isdir(dir2):
-            if not os.path.isabs(entry):
-                entry_file = os.path.join(dir1, entry)
-                if os.path.exists(entry_file):
-                    if os.path.isfile(entry_file):
-                        stage.transform(dir1, entry, is_map, dir2, msg)
-                    else:
-                        print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to"
-                              " a file")
-                else:
-                    print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should exist")
-            else:
-                print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should be relative "
-                      "path")
-        else:
-            print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should lead to a dir")
-    else:
-        print("fault: datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should exist")
+    if not (os.path.exists(dir1) and os.path.exists(dir2)):
+        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should exist")
+    if not (os.path.isdir(dir1) and os.path.isdir(dir2)):
+        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should lead to a dir")
+    if os.path.isabs(entry):
+        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should be relative path")
+
+    entry_file = os.path.join(dir1, entry)
+
+    if not os.path.exists(entry_file):
+        print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should exist")
+    if not os.path.isfile(entry_file):
+        print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to a file")
+
+    stage.transform(dir1, entry, is_map, dir2, msg)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -112,18 +97,13 @@ def commit(msg: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
+    # TODO: consider whether raise another kind of error/warning
     if stage.empty():
-        print("Nothing to commit")
-        sys.exit(1)
+        raise ValueError("Nothing to commit")
 
-    try:
-        repo.commit(stage, msg)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.commit(stage, msg)
     print(msg)
 
     storage.save_repo(repo)
@@ -135,14 +115,9 @@ def checkout_v(obj: int) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
-    try:
-        repo.checkout(obj, False)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.checkout(obj, False)
     stage.reset()
 
     storage.save_repo(repo)
@@ -154,14 +129,9 @@ def checkout_b(obj: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
-    try:
-        repo.checkout(obj, True)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.checkout(obj, True)
     stage.reset()
 
     storage.save_repo(repo)
@@ -173,15 +143,9 @@ def save(obj: int) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
-    try:
-        repo.save(obj)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
-
+    repo.save(obj)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -192,14 +156,9 @@ def unsave(obj: int) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
-    try:
-        repo.unsave(obj)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.unsave(obj)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -210,8 +169,7 @@ def adjust() -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
     repo.adjust()
 
@@ -224,8 +182,7 @@ def log() -> str:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Not in a valid repository")
 
     log_info = repo.log()
 
@@ -239,8 +196,7 @@ def status() -> str:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Error: Not in a valid repository")
 
     status_info = repo.status()
 
@@ -253,14 +209,9 @@ def branch(name: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        print("Error: Not in a valid repository")
-        sys.exit(1)
+        raise ValueError("Error: Not in a valid repository")
 
-    try:
-        repo.branch(name)
-    except ValueError as e:
-        print("Error:", e)
-        sys.exit(1)
+    repo.branch(name)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
