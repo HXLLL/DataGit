@@ -190,7 +190,7 @@ class Stage():
         return new_version
 
     def status(self) -> str:
-        print(self.__dir_tree.unfold('test'))
+        # print(self.__dir_tree.unfold('test'))
         res = ""
         for i,m in enumerate(self.__modify_sequence):
             res += ("Modify %d:\n" % i) + m.info() + "\n"

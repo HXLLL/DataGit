@@ -20,8 +20,9 @@ def get_working_dir() -> str:
 
 
 def get_hash(file:str) -> str:
-    f = open(file, 'rb')
-    data = f.read()
+    data = ""
+    with open(file, 'rb') as f:
+        data = f.read()
     return hashlib.sha1(data).hexdigest()
 
 def in_working_dir(dir:str) -> bool:
