@@ -1,4 +1,5 @@
 import sys
+import os
 import pdb
 import argparse
 import controller
@@ -122,11 +123,23 @@ def main():
         parser.print_help()
         sys.exit(1)
 
+    lockdir = "C:\\tmp\\lock.txt"
     try:
-        args.func(args)
+        with open(lockdir, "x") as lockfile:
+            args.func(args)
     except (ValueError, RuntimeError) as e:
         print("Error:", e)
+        os.remove(lockdir)
         sys.exit(1)
+    except KeyboardInterrupt:
+        print("Terminated")
+        os.remove(lockdir)
+        sys.exit(1)
+    except IOError:
+        print("Another datagit is running")
+    except:
+        os.remove(lockdir)
+    os.remove(lockdir)
 
 if __name__ == "__main__":
     main()

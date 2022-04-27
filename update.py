@@ -18,17 +18,22 @@ class Update(Modify):
         files_n = 0
         for item in self.__add_list:
             files_n += len(item[1].unfold(os.path.join(utils.get_working_dir(), item[0])))
+
         pbar = tqdm(total=files_n)
-        pbar.set_description("Copy files")
-        for item in self.__add_list:
-            # print(item[1])
-            Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
-            # print(Files)
-            for atuple in Files:
-                # print('atuple[0]:', atuple[0])
-                h = storage.save_file(atuple[0])
-                pbar.update(1)
-                atuple[1].set_hash(h)
+        try:
+            pbar.set_description("Copy files")
+            for item in self.__add_list:
+                # print(item[1])
+                Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
+                # print(Files)
+                for atuple in Files:
+                    # print('atuple[0]:', atuple[0])
+                    h = storage.save_file(atuple[0])
+                    pbar.update(1)
+                    atuple[1].set_hash(h)
+        except:
+            pbar.close()
+            raise
         pbar.close()
     
     
@@ -72,18 +77,19 @@ class Update(Modify):
             else:
                 os.remove(path)
 
-        import pdb 
-
         bar = tqdm(total = sum([x[1].size() for x in self.__add_list]))
         bar.set_description("Update")
-
-        for item in self.__add_list:
-            item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
-            # print(item_abs_path, item[0], item[1].get_name())
-            if item[1].get_type() == 'directory':
-                move_dir(item_abs_path, item[1], bar)
-            else:
-                move_file(item_abs_path, item[1], bar)
+        try:
+            for item in self.__add_list:
+                item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
+                # print(item_abs_path, item[0], item[1].get_name())
+                if item[1].get_type() == 'directory':
+                    move_dir(item_abs_path, item[1], bar)
+                else:
+                    move_file(item_abs_path, item[1], bar)
+        except:
+            bar.close()
+            raise
         bar.close()
 
 

@@ -98,7 +98,11 @@ class Directory():
             files_n += len(files)
         pbar = tqdm(total=files_n)
         pbar.set_description("Construct dir tree")
-        self.construct_rec(working_dir, pbar)
+        try:
+            self.construct_rec(working_dir, pbar)
+        except:
+            pbar.close()
+            raise
         pbar.close()
 
     
