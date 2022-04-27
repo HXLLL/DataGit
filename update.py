@@ -1,6 +1,5 @@
 from modify import Modify
 from storage import storage
-from tqdm import tqdm
 import utils
 import os
 import shutil
@@ -20,6 +19,7 @@ class Update(Modify):
         for item in self.__add_list:
             files_n += len(item[1].unfold(os.path.join(utils.get_working_dir(), item[0])))
         pbar = tqdm(total=files_n)
+        pbar.set_description("Copy files")
         for item in self.__add_list:
             # print(item[1])
             Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
@@ -42,15 +42,16 @@ class Update(Modify):
         # for a in self.__remove_list:
         #     print(a[0], a[1].unfold('del_test'))
 
-        def move_file(base_path, afile) -> None:
+        def move_file(base_path, afile, bar) -> None:
             '''
             还原单个文件
             '''
             git_file_name_0 = utils.get_working_dir()
             git_file_name_1 = storage.get_file(afile.get_hash())
             shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), base_path)
+            bar.update(1)
 
-        def move_dir(base_path, adir) -> None:
+        def move_dir(base_path, adir, bar) -> None:
             '''
             将dir类下的目录结构还原,文件加入working_dir目录下
             '''
@@ -58,10 +59,11 @@ class Update(Modify):
                 os.makedirs(base_path)
             
             for item in adir.get_dirs().values():
-                move_dir(os.path.join(base_path, item.get_name()), item)
+                move_dir(os.path.join(base_path, item.get_name()), item, bar)
             
             for item in adir.get_files().values():
-                move_file(os.path.join(base_path, item.get_name()), item)
+                move_file(os.path.join(base_path, item.get_name()), item, bar)
+        
 
         for item in self.__remove_list:
             path = os.path.join(working_dir, item[0], item[1].get_name())
@@ -72,8 +74,8 @@ class Update(Modify):
 
         import pdb 
 
-        pdb.set_trace()
         bar = tqdm(total = sum([x[1].size() for x in self.__add_list]))
+        bar.set_description("Update")
 
         for item in self.__add_list:
             item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
