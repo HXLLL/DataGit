@@ -97,10 +97,10 @@ class Repo:
         """
         save a version.
         """
-        if VersionID in self.saved_version:
-            raise ValueError("This version has already been saved")
         if not VersionID in self.version_map:
             raise ValueError("Version not exists")
+        if VersionID in self.saved_version:
+            raise ValueError("This version has already been saved")
 
         dest_version = self.version_map[VersionID] # exit if VersionID not exists
         src_version, route = self.__find_saved_dataSet(dest_version)
@@ -121,6 +121,8 @@ class Repo:
         """
         unsave a version.
         """
+        if not VersionID in self.version_map:
+            raise ValueError("Version not exists")
         if not VersionID in self.saved_version:
             raise ValueError("This version has not been saved")
 
@@ -156,7 +158,10 @@ class Repo:
             idx = cur_branches.index(self.HEAD)
             cur_branches[idx] = "%s <- HEAD" % self.HEAD
         res_branch = "(" + ", ".join(cur_branches) + ")"
-        res = prefix + "* %d %s: %s\n" % (current_version.id, res_branch, current_version.message)
+        res = prefix + "* %d %s: %s" % (current_version.id, res_branch, current_version.message)
+        if current_version.id in self.saved_version:
+            res += " (saved)"
+        res += "\n"
 
         child_list = [c for c in self.versions if c.parent == cur_id]
         if len(child_list) == 0:
