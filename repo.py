@@ -128,11 +128,19 @@ class Repo:
         self.saved_version.delete(VersionID)
 
     # ------------------ adjust ---------------
-    def find_suitable_versions(self) -> List[Version]:
-        pass
+    def find_suitable_versions(self, current_version:Version, flag:bool):
+        cur_id = current_version.id
+        if flag:
+            self.save(cur_id)
+        else:
+            self.unsave(cur_id)
+        child_list = [c for c in self.versions if c.parent == cur_id]
+        for child in child_list:
+            self.find_suitable_versions(self, child, not flag)
+        return
 
     def adjust(self) -> None:
-        pass
+        self.find_suitable_versions(self.init_version, True)
 
 #         suitable_versions = find_suitable_versions()
 #         for Version in suitable_versions:
