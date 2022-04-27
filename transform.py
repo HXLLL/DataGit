@@ -30,12 +30,9 @@ class Transform(Modify):
             cmd = git_script_entry + " " + os.path.join(working_dir, self.__script_working_dir)
             save_dir = os.getcwd()
             os.chdir(git_script_dir)
-            try:
-                os.system(cmd)
-            except Exception as e:
-                raise e
-            finally:
-                os.chdir(save_dir)
+            if os.system(cmd) != 0:
+                raise RuntimeError('Transfomer exited abnormally')
+            os.chdir(save_dir)
         else:
             working_dir = os.path.join(working_dir, self.__script_working_dir)
             # print("dbg:: ",working_dir)
@@ -55,5 +52,4 @@ class Transform(Modify):
                 os.chdir(save_dir)
 
     def info(self) -> str:
-        return f"    transform in directory[{self.__script_working_dir}]: \
-                 {self.__message}"
+        return f"    transform in directory[{self.__script_working_dir}]: {self.__message}"
