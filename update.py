@@ -50,7 +50,7 @@ class Update(Modify):
 
         for item in self.__add_list:
             item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
-            print(item_abs_path, item[0], item[1].get_name())
+            # print(item_abs_path, item[0], item[1].get_name())
             if item[1].get_type() == 'directory':
                 move_dir(item_abs_path, item[1])
             else:
