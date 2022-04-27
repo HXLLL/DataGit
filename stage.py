@@ -86,7 +86,7 @@ class Stage():
 
 
 
-    def update(self, dir: str) -> None:
+    def update(self, dir: str, call_from: str = 'other') -> None:
         '''
         参数是绝对路径
         '''
@@ -148,6 +148,10 @@ class Stage():
             raise ValueError('data directory not exist')
         relpath = os.path.relpath(data_dir, self.__root_dir)
         relpath = os.path.normpath(relpath)  # 转为标准格式
+
+        # 在transform前进行update ./data_dir, 保存文件变化
+        self.update(self, data_dir, 'self.transform')
+
         m = Transform(isMap, code_dir, entry, relpath, message)
         self.__modify_sequence.append(m)
         m.apply(self.__root_dir)
