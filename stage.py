@@ -5,7 +5,6 @@ from transform import Transform
 from update import Update
 from version import Version
 from typing import Tuple
-from tqdm import tqdm
 import os
 import utils
 import shutil
