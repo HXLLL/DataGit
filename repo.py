@@ -164,7 +164,7 @@ class Repo:
     def status(self) -> str:
         cur_branch = ""
         if self.detached_head:
-            cur_branch = "Detached HEAD, at %d" % self.HEAD
+            cur_branch = "Detached HEAD, at version %d" % self.HEAD
         else:
             cur_branch = "HEAD at branch %s" % self.HEAD
 

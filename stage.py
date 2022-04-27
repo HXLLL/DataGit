@@ -113,6 +113,10 @@ class Stage():
         '''
         if not utils.in_working_dir(dst):
             raise ValueError('dst path not in a valid repo')
+        src = os.path.normpath(src)
+        dst = os.path.normpath(dst)
+        if src.startswith(dst) or dst.startswith(src):
+            raise ValueError('Paths cannot contain each other')
         if not os.path.exists(src):
             raise ValueError('src not a valid path')
         if not os.path.exists(dst):
@@ -175,6 +179,7 @@ class Stage():
         return new_version
 
     def status(self) -> str:
+        # print(self.__dir_tree.unfold('test'))
         res = ""
         for i,m in enumerate(self.__modify_sequence):
             res += ("Modify %d:\n" % i) + m.info() + "\n"
