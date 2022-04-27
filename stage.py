@@ -150,7 +150,7 @@ class Stage():
         relpath = os.path.normpath(relpath)  # 转为标准格式
 
         # 在transform前进行update ./data_dir, 保存文件变化
-        self.update(self, data_dir, 'self.transform')
+        self.update(data_dir, 'self.transform')
 
         m = Transform(isMap, code_dir, entry, relpath, message)
         self.__modify_sequence.append(m)
