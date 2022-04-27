@@ -181,3 +181,5 @@ class Repo:
         else:
             self.branch_map[branch_name] = self.branch_map[self.HEAD]
         
+    def is_detached_head(self) -> bool:
+        return self.detached_head

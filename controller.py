@@ -1,4 +1,3 @@
-import sys
 import os
 from storage import storage
 from repo import Repo
@@ -38,6 +37,8 @@ def update(dir:str) -> None:
         raise ValueError("datagit update <dir>: <dir> should exist")
     if not os.path.isdir(dir):
         raise ValueError("datagit update <dir>: <dir> should lead to a dir")
+    if repo.is_detached_head():
+        raise ValueError("Cannot update in detatched HEAD mode")
     stage.update(dir)
 
     storage.save_repo(repo)
@@ -57,6 +58,8 @@ def add(src: str, dst: str) -> None:
         raise ValueError("datagit add <src> <dst>: <src> should exist")
     if not os.path.isdir(src):
         raise ValueError("datagit add <src> <dst>: <src> should lead to dir")
+    if repo.is_detached_head():
+        raise ValueError("Cannot update in detatched HEAD mode")
     stage.add(src, dst)
 
     storage.save_repo(repo)
@@ -85,6 +88,9 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
         print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should exist")
     if not os.path.isfile(entry_file):
         print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to a file")
+
+    if repo.is_detached_head():
+        raise ValueError("Cannot transform in detatched HEAD mode")
 
     stage.transform(dir1, entry, is_map, dir2, msg)
 
