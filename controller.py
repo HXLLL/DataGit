@@ -85,9 +85,9 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
     entry_file = os.path.join(dir1, entry)
 
     if not os.path.exists(entry_file):
-        print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should exist")
+        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should exist")
     if not os.path.isfile(entry_file):
-        print("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to a file")
+        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should lead to a file")
 
     if repo.is_detached_head():
         raise ValueError("Cannot transform in detatched HEAD mode")

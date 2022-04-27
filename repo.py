@@ -99,6 +99,8 @@ class Repo:
         """
         if VersionID in self.saved_version:
             raise ValueError("This version has already been saved")
+        if not VersionID in self.version_map:
+            raise ValueError("Version not exists")
 
         dest_version = self.version_map[VersionID] # exit if VersionID not exists
         src_version, route = self.__find_saved_dataSet(dest_version)
