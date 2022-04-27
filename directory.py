@@ -1,5 +1,6 @@
 from blob import Blob
 from typing import List, Tuple, Union, Dict
+from tqdm import tqdm
 import os
 import utils
 
@@ -63,7 +64,7 @@ class Directory():
         self.__files = new_dir.get_files()
         self.__dirs = new_dir.get_dirs()
         
-    def build_dict(self, working_dir: str) -> None:
+    def build_dict(self, working_dir: str, pbar:tqdm) -> None:
         '''
         获取working_dir下的子目录信息, 构造self.__dirs与self.__files
         '''
@@ -75,17 +76,30 @@ class Directory():
             else:
                 file = Blob(item)
                 file.set_hash(utils.get_hash(os.path.join(working_dir, item)))
+                pbar.update(1)
                 self.__files[item] = file
-    
+
+    def construct_rec(self, working_dir: str, pbar:tqdm) -> None:
+        _, self.__name = os.path.split(working_dir)
+        self.build_dict(working_dir, pbar)
+        # print('dirs', self.__dirs)
+        for item in self.__dirs:
+            self.__dirs[item].construct_rec(os.path.join(working_dir, item), pbar)
+
     def construct(self, working_dir: str) -> None:
         '''
         获得working_dir作为根目录的目录结构
         '''
-        _, self.__name = os.path.split(working_dir)
-        self.build_dict(working_dir)
-        # print('dirs', self.__dirs)
-        for item in self.__dirs:
-            self.__dirs[item].construct(os.path.join(working_dir, item))
+        files_n = 0
+        for root, adir, files in os.walk(working_dir):
+            if os.path.split(root)[1] == '.datagit':
+                adir[:] = []
+                files[:] = []
+            files_n += len(files)
+        pbar = tqdm(total=files_n)
+        self.construct_rec(working_dir, pbar)
+        pbar.close()
+
     
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''

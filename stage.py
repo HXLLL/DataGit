@@ -5,6 +5,7 @@ from transform import Transform
 from update import Update
 from version import Version
 from typing import Tuple
+from tqdm import tqdm
 import os
 import utils
 import shutil
@@ -30,6 +31,7 @@ class Stage():
         如果Dir的父文件夹不存在,要把dir的新增父文件夹的Dir构造出来
         '''
         assert(os.path.exists(dir))
+
         new_dir_tree = Directory()
         new_dir_tree.construct(dir)  # new_dir_tree是工作区内dir的目录树
         dir_relpath = os.path.relpath(dir, utils.get_working_dir())  # 转为相对路径
