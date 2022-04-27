@@ -37,10 +37,15 @@ class Transform(Modify):
             finally:
                 os.chdir(save_dir)
         else:
+            working_dir = os.path.join(working_dir, self.__script_working_dir)
+            # print("dbg:: ",working_dir)
             save_dir = os.getcwd()
             os.chdir(git_script_dir)
             try:
-                for root, dir, files in os.walk(working_dir):
+                for root, adir, files in os.walk(working_dir):
+                    if os.path.split(root)[1] == '.datagit':
+                        adir[:] = []
+                        files[:] = []
                     for afile in files:
                         cmd = git_script_entry + " " + os.path.join(root, afile)
                         os.system(cmd)
