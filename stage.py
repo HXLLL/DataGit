@@ -97,6 +97,12 @@ class Stage():
         if not add_list and not del_list:
             print('Nothing to update')
         else:
+            print('add_list:', add_list)
+            for item in add_list:
+                print(item[1].get_name())
+            print('del_list:', del_list)
+            for item in del_list:
+                print(item[1].get_name())
             upd = Update(add_list, del_list)
             self.__modify_sequence.append(upd)
     
@@ -183,7 +189,7 @@ class Stage():
         return new_version
 
     def status(self) -> str:
-        # print(self.__dir_tree.unfold('test'))
+        print(self.__dir_tree.unfold('test'))
         res = ""
         for i,m in enumerate(self.__modify_sequence):
             res += ("Modify %d:\n" % i) + m.info() + "\n"
