@@ -110,7 +110,7 @@ def commit(msg: str) -> None:
         raise ValueError("Nothing to commit")
 
     repo.commit(stage, msg)
-    print(msg)
+    # print(msg)
 
     storage.save_repo(repo)
     storage.save_stage(stage)

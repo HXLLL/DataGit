@@ -132,7 +132,7 @@ class Storage:
         os.mkdir(tmp_dir)
         return tmp_dir
 
-    def recover_directory(self, d: Directory, dir: str):
+    def recover_directory(self, d: Directory, dir: str) -> None:
         """
         dir is absolute path
         """
@@ -152,7 +152,7 @@ class Storage:
             else:
                 raise "Error type in directory"
     
-    def save_directory(self, d: Directory, dir: str):
+    def save_directory(self, d: Directory, dir: str) -> None:
         """
         dir is absolute path
         """
