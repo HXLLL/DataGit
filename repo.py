@@ -125,7 +125,7 @@ class Repo:
             raise ValueError("This version has not been saved")
 
         storage.delete_version(VersionID)
-        self.saved_version.delete(VersionID)
+        self.saved_version.remove(VersionID)
 
     # ------------------ adjust ---------------
     def find_suitable_versions(self) -> List[Version]:
