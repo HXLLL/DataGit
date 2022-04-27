@@ -202,7 +202,7 @@ def status() -> str:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        raise ValueError("Error: Not in a valid repository")
+        raise ValueError("Not in a valid repository")
 
     status_info = repo.status()
 
@@ -215,7 +215,9 @@ def branch(name: str) -> None:
     stage = storage.load_stage()
 
     if repo is None or stage is None:
-        raise ValueError("Error: Not in a valid repository")
+        raise ValueError("Not in a valid repository")
+    if len(name) > 255:
+        raise ValueError("Branch name too long")
 
     repo.branch(name)
 
