@@ -1,1 +1,1 @@
-@cmd /c "activate base;python scale.py %~1"
+@cmd /c "python scale.py %~1"
