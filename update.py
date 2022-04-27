@@ -1,5 +1,6 @@
 from modify import Modify
 from storage import storage
+from tqdm import tqdm
 import utils
 import os
 import shutil
@@ -15,6 +16,10 @@ class Update(Modify):
         self.__add_list = add_list
         self.__remove_list = remove_list
         #保存add_list内的文件
+        files_n = 0
+        for item in self.__add_list:
+            files_n += len(item[1].unfold(os.path.join(utils.get_working_dir(), item[0])))
+        pbar = tqdm(total=files_n)
         for item in self.__add_list:
             # print(item[1])
             Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
@@ -22,7 +27,9 @@ class Update(Modify):
             for atuple in Files:
                 # print('atuple[0]:', atuple[0])
                 h = storage.save_file(atuple[0])
+                pbar.update(1)
                 atuple[1].set_hash(h)
+        pbar.close()
     
     
     def apply(self, working_dir):
@@ -34,6 +41,7 @@ class Update(Modify):
         #     print(a[0], a[1].unfold('add_test'))
         # for a in self.__remove_list:
         #     print(a[0], a[1].unfold('del_test'))
+
         def move_file(base_path, afile) -> None:
             '''
             还原单个文件
