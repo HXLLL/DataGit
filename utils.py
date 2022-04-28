@@ -1,6 +1,7 @@
 import hashlib
 import os.path
 
+
 def get_working_dir() -> str:
     """
     get working directory's root
@@ -19,13 +20,14 @@ def get_working_dir() -> str:
         return None
 
 
-def get_hash(file:str) -> str:
+def get_hash(file: str) -> str:
     data = ""
     with open(file, 'rb') as f:
         data = f.read()
     return hashlib.sha1(data).hexdigest()
 
-def in_working_dir(dir:str) -> bool:
+
+def in_working_dir(dir: str) -> bool:
     working_dir = get_working_dir()
     working_dir = os.path.abspath(working_dir)
     dir = os.path.abspath(dir)

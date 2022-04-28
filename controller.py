@@ -25,7 +25,7 @@ def init() -> None:
     storage.save_stage(stage)
 
 
-def update(dir:str) -> None:
+def update(dir: str) -> None:
     repo = storage.load_repo()
     stage = storage.load_stage()
 
@@ -78,7 +78,8 @@ def transform(dir1: str, entry: str, msg: str, is_map: bool, dir2: str) -> None:
     if not (os.path.exists(dir1) and os.path.exists(dir2)):
         raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should exist")
     if not (os.path.isdir(dir1) and os.path.isdir(dir2)):
-        raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should lead to a dir")
+        raise ValueError(
+            "datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <dir1> <dir2> should lead to a dir")
     if os.path.isabs(entry):
         raise ValueError("datagit transform <dir1> <entry> -m <msg> [-s] [-d <dir2>]: <entry> should be relative path")
 
@@ -172,7 +173,6 @@ def unsave(obj: int) -> None:
 
 def adjust() -> None:
     pass
-    # pass
     # repo = storage.load_repo()
     # stage = storage.load_stage()
 
@@ -211,6 +211,7 @@ def status() -> str:
     storage.save_repo(repo)
     storage.save_stage(stage)
     return status_info
+
 
 def branch(name: str) -> None:
     repo = storage.load_repo()

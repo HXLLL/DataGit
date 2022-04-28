@@ -5,6 +5,7 @@ from blob import Blob
 import utils
 import pickle
 
+
 class Storage:
     def __init__(self):
         pass
@@ -144,14 +145,14 @@ class Storage:
                 shutil.copy(f_dir, os.path.join(dir, name))
             else:
                 raise "Error type in directory"
-        
+
         for name, f in d.get_dirs().items():
             if isinstance(f, Directory):
                 os.mkdir(os.path.join(dir, name))
                 self.recover_directory(f, os.path.join(dir, name))
             else:
                 raise "Error type in directory"
-    
+
     def save_directory(self, d: Directory, dir: str) -> None:
         """
         dir is absolute path
@@ -161,7 +162,6 @@ class Storage:
 
         for name, f in d.get_dirs().items():
             self.save_directory(f, os.path.join(dir, name))
-        
 
     def update_workingdir(self, versionID: int, dir: str) -> None:
         wd = utils.get_working_dir()
@@ -202,9 +202,9 @@ class Storage:
     def delete_version(self, versionID: int) -> None:
         # TODO: actually remove saved files
         pass
-        
-    
+
     # 功能：返回当前工作区的根目录
+
     def get_root_path() -> str:
         pass
 

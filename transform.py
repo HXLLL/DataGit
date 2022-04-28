@@ -6,18 +6,18 @@ from storage import storage
 import os
 import utils
 
+
 class Transform(Modify):
     def __init__(self, isMap: int, script_dir: str, script_entry: str, script_working_dir: str, message: str) -> None:
         super().__init__()
         self.__isMap = isMap
-        self.__script_dir = script_dir                  #绝对
-        self.__script_entry = script_entry              #相对
-        self.__script_working_dir = script_working_dir  #相对
+        self.__script_dir = script_dir  # 绝对
+        self.__script_entry = script_entry  # 相对
+        self.__script_working_dir = script_working_dir  # 相对
         # print('传的', isMap, script_working_dir)
         self.__id: int = storage.save_transform(script_dir)
         self.__message = message
 
-    
     def apply(self, working_dir):
         '''
         将Transform对应脚本应用到working_dir目录下

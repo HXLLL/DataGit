@@ -7,6 +7,7 @@ from typing import List
 import os
 import utils
 
+
 class Repo:
     def __init__(self):
         self.init_version = Version(None, 1, [], 'init')
@@ -47,7 +48,7 @@ class Repo:
             b = self.HEAD
             assert type(b).__name__ == 'str'
             self.branch_map[b] = id
-    
+
     # ------------------ checkout ---------------
     def __find_saved_dataSet(self, dest_version: Version) -> Tuple[Version, List[Version]]:
         """
@@ -64,7 +65,7 @@ class Repo:
         route.reverse()
         return v, route
 
-    def checkout(self, dst: Union[int, str], to_branch: bool) -> None: # op指示VersionID or branch_name
+    def checkout(self, dst: Union[int, str], to_branch: bool) -> None:  # op指示VersionID or branch_name
         """
         given a version ID or branch name, replace contents of the working dir with files of that branch
         """
@@ -84,7 +85,7 @@ class Repo:
         dest_version = self.version_map[dst]
         src_version, route = self.__find_saved_dataSet(dest_version)
         working_dir = utils.get_working_dir()
-        storage.update_workingdir(src_version.id, working_dir) #以存储版本的复原
+        storage.update_workingdir(src_version.id, working_dir)  # 以存储版本的复原
 
         modify_sequence = []
         for v in route:
@@ -102,10 +103,10 @@ class Repo:
         if VersionID in self.saved_version:
             raise ValueError("This version has already been saved")
 
-        dest_version = self.version_map[VersionID] # exit if VersionID not exists
+        dest_version = self.version_map[VersionID]  # exit if VersionID not exists
         src_version, route = self.__find_saved_dataSet(dest_version)
         tmp_dir = storage.create_tmp_dir()
-        storage.update_workingdir(src_version.id, tmp_dir) #在某个位置将版本变换出来
+        storage.update_workingdir(src_version.id, tmp_dir)  # 在某个位置将版本变换出来
 
         modify_sequence = []
         for v in route:
@@ -114,7 +115,7 @@ class Repo:
             m.apply(tmp_dir)
 
         storage.save_version(dest_version.id, tmp_dir)
-        self.saved_version.append(VersionID) 
+        self.saved_version.append(VersionID)
 
     # ------------------ unsave ---------------
     def unsave(self, VersionID: int) -> None:
@@ -130,7 +131,7 @@ class Repo:
         self.saved_version.remove(VersionID)
 
     # ------------------ adjust ---------------
-    def find_suitable_versions(self, current_version:Version, flag:bool):
+    def find_suitable_versions(self, current_version: Version, flag: bool):
         cur_id = current_version.id
         if flag:
             self.save(cur_id)
@@ -147,11 +148,10 @@ class Repo:
 #         suitable_versions = find_suitable_versions()
 #         for Version in suitable_versions:
 #             self.save(Version)/self.unsave(Version)
-    
-# ------------------ log ---------------
-    def find_log(self, current_version:Version, prefix:str):
+
+    def __find_log(self, current_version: Version, prefix: str):
         cur_id = current_version.id
-        cur_branches = [k for k,v in self.branch_map.items() if v == cur_id]
+        cur_branches = [k for k, v in self.branch_map.items() if v == cur_id]
         if self.detached_head and self.HEAD == cur_id:
             cur_branches.append('HEAD')
         elif not self.detached_head and self.HEAD in cur_branches:
@@ -168,13 +168,13 @@ class Repo:
             return res
         for child in child_list[:-1]:
             res += prefix + '|\\\n'
-            res += self.find_log(child, prefix + "| ")
+            res += self.__find_log(child, prefix + "| ")
         res += prefix + ' \\\n'
-        res += self.find_log(child_list[-1], prefix + '  ')
+        res += self.__find_log(child_list[-1], prefix + '  ')
         return res
 
     def log(self) -> str:
-        return self.find_log(self.init_version, "")
+        return self.__find_log(self.init_version, "")
 
     def status(self) -> str:
         cur_branch = ""
@@ -186,7 +186,6 @@ class Repo:
         stage = storage.load_stage()
         return cur_branch + "\n" + stage.status()
 
-# ------------------ branch ---------------
     def branch(self, branch_name) -> None:
         if branch_name in self.branch_map:
             raise ValueError("Branch already exists")
@@ -195,6 +194,6 @@ class Repo:
             self.branch_map[branch_name] = self.HEAD
         else:
             self.branch_map[branch_name] = self.branch_map[self.HEAD]
-        
+
     def is_detached_head(self) -> bool:
         return self.detached_head

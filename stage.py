@@ -9,6 +9,7 @@ import os
 import utils
 import shutil
 
+
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
@@ -38,7 +39,7 @@ class Stage():
         dirs = dir_relpath.split(os.sep)  # 路径拆分
         if dirs[0] == '.':
             del dirs[0]
-        
+
         u = self.__dir_tree
         cur_path = '.'
         stop = -1
@@ -49,7 +50,7 @@ class Stage():
                 break
             u = v
             cur_path = os.path.join(cur_path, dirname)
-        
+
         add_list = []
         remove_list = []
         if stop == -1:
@@ -81,10 +82,8 @@ class Stage():
             # v现在是dir的上级目录的目录树
             v.set_dir(new_dir_tree)
             add_list = [(cur_path, fa_dir_tree)]
-        
+
         return add_list, remove_list
-
-
 
     def update(self, dir: str, report_empty=True) -> None:
         '''
@@ -106,7 +105,7 @@ class Stage():
             #     print(item[1].get_name())
             upd = Update(add_list, del_list)
             self.__modify_sequence.append(upd)
-    
+
     def add(self, src: str, dst: str) -> None:
         '''
         参数都是绝对路径
@@ -140,10 +139,9 @@ class Stage():
                 if not os.path.exists(dst_dir):
                     os.makedirs(dst_dir)
                 shutil.copy(src_file, dst_file)
-        
+
         self.update(dst)
 
-    
     def transform(self, code_dir: str, entry: str, isMap: int, data_dir: str, message: str):
         '''
         新建一个Transform实例,添加到modify_sequnece中,并应用到工作目录
@@ -180,7 +178,7 @@ class Stage():
             u.del_dir(os.path.split(data_dir)[1])  # 目录没了
         # print('transform finished')
         # print(self.__dir_tree.unfold('transform_test'))
-    
+
     def commit(self, parentID: int, id: int, message: str) -> Version:
         '''
         新建并返回一个Version实例
@@ -192,13 +190,13 @@ class Stage():
     def status(self) -> str:
         # print(self.__dir_tree.unfold('test'))
         res = ""
-        for i,m in enumerate(self.__modify_sequence):
+        for i, m in enumerate(self.__modify_sequence):
             res += ("Modify %d:\n" % i) + m.info() + "\n"
         if res == "":
             return "The working tree is clean."
         else:
             return res
-    
+
     def reset(self) -> None:
         # TODO: prompt user when modify_sequence is not empty
         self.__dir_tree = Directory(self.__dir_tree.get_name())
