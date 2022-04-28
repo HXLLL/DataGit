@@ -10,18 +10,6 @@ class Storage:
     def __init__(self):
         pass
 
-    def load_storage(self) -> None:
-        """
-        Nothing to do
-        """
-        pass
-
-    def save_storage(self) -> None:
-        """
-        Nothing to do
-        """
-        pass
-
     def load_repo(self) -> 'Repo':
         """
         load repo from .datagit/repo
@@ -201,11 +189,6 @@ class Storage:
 
     def delete_version(self, versionID: int) -> None:
         # TODO: actually remove saved files
-        pass
-
-    # 功能：返回当前工作区的根目录
-
-    def get_root_path() -> str:
         pass
 
 

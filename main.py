@@ -138,8 +138,6 @@ def main():
     except Timeout:
         print("Another datagit is running")
         sys.exit(1)
-    except:
-        sys.exit(1)
 
 
 if __name__ == "__main__":
