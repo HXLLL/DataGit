@@ -1,5 +1,5 @@
 import os
-import storage
+from storage import storage
 from repo import Repo
 from stage import Stage
 from version import Version

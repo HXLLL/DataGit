@@ -5,6 +5,13 @@ import argparse
 import controller
 from filelock import Timeout, FileLock
 
+def acquire_lock() -> FileLock:
+    lockdir = "C:\\tmp"
+    if not os.path.isdir("C:\\tmp"):
+        lockdir = "C:\\Temp"
+    if not os.path.isdir(lockdir):
+        os.mkdir(lockdir)
+    return FileLock(os.path.join(lockdir, "lock.txt"), timeout=1)
 
 def func_init(args: argparse.Namespace) -> None:
     controller.init()
@@ -28,11 +35,9 @@ def func_commit(args: argparse.Namespace) -> None:
 
 def func_checkout(args: argparse.Namespace) -> None:
     if (args.v == None) and (args.b == None):
-        print("Error: you should give -v or -b, not neither of them!")
-        return
+        raise ("You should give -v or -b, not neither of them!")
     if (args.v != None) and (args.b != None):
-        print("Error: you should give -v or -b, not both of them!")
-        return
+        raise print("You should give -v or -b, not both of them!")
     if args.v != None:
         controller.checkout_v(args.v)
         return
@@ -124,10 +129,8 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    lockdir = "C:\\tmp\\lock.txt"
     try:
-        lock = FileLock(lockdir, timeout=1)
-        with lock:
+        with acquire_lock():
             args.func(args)
     except (ValueError, RuntimeError) as e:
         print("Error:", e)
