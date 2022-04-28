@@ -126,7 +126,7 @@ def main():
 
     lockdir = "C:\\tmp\\lock.txt"
     try:
-        lock = FileLock(lockdir)
+        lock = FileLock(lockdir, timeout=1)
         with lock:
             args.func(args)
     except (ValueError, RuntimeError) as e:
@@ -135,7 +135,7 @@ def main():
     except KeyboardInterrupt:
         print("Terminated")
         sys.exit(1)
-    except IOError:
+    except Timeout:
         print("Another datagit is running")
         sys.exit(1)
     except:
