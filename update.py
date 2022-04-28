@@ -78,7 +78,7 @@ class Update(Modify):
                 os.remove(path)
 
         bar = tqdm(total = sum([x[1].size() for x in self.__add_list]))
-        bar.set_description("Update")
+        bar.set_description("Apply update")
         try:
             for item in self.__add_list:
                 item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
