@@ -137,8 +137,10 @@ def main():
         sys.exit(1)
     except IOError:
         print("Another datagit is running")
+        sys.exit(1)
     except:
         os.remove(lockdir)
+        sys.exit(1)
     os.remove(lockdir)
 
 if __name__ == "__main__":
