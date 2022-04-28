@@ -1,8 +1,10 @@
+from multiprocessing import Pool
 from blob import Blob
 from typing import List, Tuple, Union, Dict
 from tqdm import tqdm
 import os
 import utils
+import threading
 
 
 class Directory:
@@ -10,6 +12,7 @@ class Directory:
         self.__name: str = name      # 文件夹名称（不是路径）
         self.__files: Dict[str, Blob] = {}
         self.__dirs: Dict[str, Directory] = {}
+        self.cnt = 0
 
     def get_name(self) -> str:
         return self.__name
@@ -65,10 +68,12 @@ class Directory:
         self.__files = new_dir.get_files()
         self.__dirs = new_dir.get_dirs()
 
-    def build_dict(self, working_dir: str, pbar: tqdm) -> None:
+    def build_dict(self, working_dir: str, pbar: tqdm, p: Pool, res) -> None:
         '''
         获取working_dir下的子目录信息, 构造self.__dirs与self.__files
         '''
+        l = threading.Lock()
+
         for item in os.listdir(working_dir):
             abs_path = os.path.join(working_dir, item)
             if os.path.isdir(abs_path):
@@ -76,17 +81,23 @@ class Directory:
                     self.__dirs[item] = Directory(item)
             else:
                 file = Blob(item)
-                file.set_hash(utils.get_hash(os.path.join(working_dir, item)))
-                pbar.update(1)
-                self.__files[item] = file
 
-    def construct_rec(self, working_dir: str, pbar: tqdm) -> None:
+                def error():
+                    print("Error")
+                    raise
+                def get_hash_callback(res, filename=item, file=file, pbar=pbar):
+                    file.set_hash(res)
+                    pbar.update(1)
+                    self.__files[filename] = file
+                res.append(p.apply_async(utils.get_hash, [os.path.join(working_dir, item)], callback=get_hash_callback, error_callback=error))
+
+    def construct_rec(self, working_dir: str, pbar: tqdm, p: Pool, res) -> None:
         _, self.__name = os.path.split(working_dir)
-        self.build_dict(working_dir, pbar)
+        self.build_dict(working_dir, pbar, p, res)
         # print('dirs', self.__dirs)
         for item in self.__dirs:
             self.__dirs[item].construct_rec(
-                os.path.join(working_dir, item), pbar)
+                os.path.join(working_dir, item), pbar, p, res)
 
     def construct(self, working_dir: str) -> None:
         '''
@@ -98,14 +109,13 @@ class Directory:
                 adir[:] = []
                 files[:] = []
             files_n += len(files)
-        pbar = tqdm(total=files_n)
-        pbar.set_description("Scan directory structure")
-        try:
-            self.construct_rec(working_dir, pbar)
-        except:
-            pbar.close()
-            raise
-        pbar.close()
+
+        with tqdm(total=files_n, desc="Scan directory structure") as pbar:
+            p = Pool(8)
+            res = []
+            self.construct_rec(working_dir, pbar, p, res)
+            for v in res:
+                v.wait()
 
     def get_update_list(self, old: 'Directory', relpath: str) -> Tuple[list, list]:
         '''
@@ -122,9 +132,6 @@ class Directory:
             # print('filename:', filename)
             if filename in old_files:
                 old_file = old_files[filename]
-                # print('new hash:', new_file.get_hash())
-                # print('old hash:', old_file.get_hash())
-                # print('equal:', new_file.get_hash() == old_file.get_hash())
                 if new_file.get_hash() != old_file.get_hash():
                     remove_list.append((relpath, old_file))
                     add_list.append((relpath, new_file))

@@ -4,6 +4,7 @@ import utils
 import os
 import shutil
 from tqdm import tqdm
+from multiprocessing import Pool
 
 
 class Update(Modify):
@@ -20,22 +21,21 @@ class Update(Modify):
         for item in self.__add_list:
             files_n += len(item[1].unfold(os.path.join(utils.get_working_dir(), item[0])))
 
-        pbar = tqdm(total=files_n)
-        try:
-            pbar.set_description("Copy files")
+        with tqdm(total=files_n, desc="Copy files") as pbar:
+            res = []
+            p = Pool(8)
             for item in self.__add_list:
-                # print(item[1])
                 Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
-                # print(Files)
                 for atuple in Files:
-                    # print('atuple[0]:', atuple[0])
-                    h = storage.save_file(atuple[0])
-                    pbar.update(1)
-                    atuple[1].set_hash(h)
-        except:
-            pbar.close()
-            raise
-        pbar.close()
+                    def error():
+                        print("Error")
+                        raise
+                    def init_callback(res, blob=atuple[1], pbar=pbar):
+                        pbar.update(1)
+                        blob.set_hash(res)
+                    res.append(p.apply_async(storage.save_file, [atuple[0]], callback=init_callback, error_callback=error))
+            for a in res:
+                a.wait()
 
     def apply(self, working_dir):
         '''
@@ -47,49 +47,54 @@ class Update(Modify):
         # for a in self.__remove_list:
         #     print(a[0], a[1].unfold('del_test'))
 
-        def move_file(base_path, afile, bar) -> None:
-            '''
-            还原单个文件
-            '''
-            git_file_name_0 = utils.get_working_dir()
-            git_file_name_1 = storage.get_file(afile.get_hash())
-            shutil.copyfile(os.path.join(git_file_name_0, git_file_name_1), base_path)
-            bar.update(1)
+        with tqdm(total=sum([x[1].size() for x in self.__add_list]), desc="Apply update") as bar:
+            p = Pool(8)
+            res = []
 
-        def move_dir(base_path, adir, bar) -> None:
-            '''
-            将dir类下的目录结构还原,文件加入working_dir目录下
-            '''
-            if not os.path.exists(base_path):
-                os.makedirs(base_path)
+            def move_file(base_path, afile) -> None:
+                '''
+                还原单个文件
+                '''
+                git_file_name_0 = utils.get_working_dir()
+                git_file_name_1 = storage.get_file(afile.get_hash())
+                filename = os.path.join(git_file_name_0, git_file_name_1)
 
-            for item in adir.get_dirs().values():
-                move_dir(os.path.join(base_path, item.get_name()), item, bar)
+                def error():
+                    print("Error")
+                    raise
+                def move_file_callback(res, bar=bar):
+                    bar.update(1)
+                res.append(p.apply_async(shutil.copyfile, [filename, base_path], callback=move_file_callback, error_callback=error))
 
-            for item in adir.get_files().values():
-                move_file(os.path.join(base_path, item.get_name()), item, bar)
+            def move_dir(base_path, adir) -> None:
+                '''
+                将dir类下的目录结构还原,文件加入working_dir目录下
+                '''
+                if not os.path.exists(base_path):
+                    os.makedirs(base_path)
 
-        for item in self.__remove_list:
-            path = os.path.join(working_dir, item[0], item[1].get_name())
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.remove(path)
+                for item in adir.get_dirs().values():
+                    move_dir(os.path.join(base_path, item.get_name()), item)
 
-        bar = tqdm(total=sum([x[1].size() for x in self.__add_list]))
-        bar.set_description("Apply update")
-        try:
+                for item in adir.get_files().values():
+                    move_file(os.path.join(base_path, item.get_name()), item)
+
+            for item in self.__remove_list:
+                path = os.path.join(working_dir, item[0], item[1].get_name())
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+
             for item in self.__add_list:
                 item_abs_path = os.path.join(working_dir, item[0], item[1].get_name())
-                # print(item_abs_path, item[0], item[1].get_name())
                 if item[1].get_type() == 'directory':
-                    move_dir(item_abs_path, item[1], bar)
+                    move_dir(item_abs_path, item[1])
                 else:
-                    move_file(item_abs_path, item[1], bar)
-        except:
-            bar.close()
-            raise
-        bar.close()
+                    move_file(item_abs_path, item[1])
+            
+            for r in res:
+                r.wait()
 
     def info(self) -> str:
         def file2str(f):

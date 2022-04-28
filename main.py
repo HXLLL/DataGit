@@ -6,8 +6,8 @@ import controller
 from filelock import Timeout, FileLock
 
 def acquire_lock() -> FileLock:
-    lockdir = "C:\\tmp"
-    if not os.path.isdir("C:\\tmp"):
+    lockdir = "/tmp"
+    if not os.path.isdir(lockdir):
         lockdir = "C:\\Temp"
     if not os.path.isdir(lockdir):
         os.mkdir(lockdir)
@@ -144,4 +144,9 @@ def main():
 
 
 if __name__ == "__main__":
+    import cProfile
+    pr = cProfile.Profile()
+    pr.enable()
     main()
+    pr.disable()
+    pr.dump_stats("1.prof")

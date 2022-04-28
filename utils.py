@@ -8,6 +8,9 @@ def get_working_dir() -> str:
     return -- absolute dir of working dir's root
     """
 
+    if hasattr(get_working_dir, 'cache'):
+        return get_working_dir.cache
+
     d = os.getcwd()
     while os.path.dirname(d) != d:
         if os.path.isdir(os.path.join(d, ".datagit")):
@@ -15,6 +18,7 @@ def get_working_dir() -> str:
         d = os.path.dirname(d)
 
     if os.path.dirname(d) != d:
+        get_working_dir.cache = d
         return d
     else:
         return None
