@@ -171,16 +171,18 @@ def unsave(obj: int) -> None:
 
 
 def adjust() -> None:
-    repo = storage.load_repo()
-    stage = storage.load_stage()
+    pass
+    # pass
+    # repo = storage.load_repo()
+    # stage = storage.load_stage()
 
-    if repo is None or stage is None:
-        raise ValueError("Not in a valid repository")
+    # if repo is None or stage is None:
+    #     raise ValueError("Not in a valid repository")
 
-    repo.adjust()
+    # repo.adjust()
 
-    storage.save_repo(repo)
-    storage.save_stage(stage)
+    # storage.save_repo(repo)
+    # storage.save_stage(stage)
 
 
 def log() -> str:
