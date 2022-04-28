@@ -6,14 +6,13 @@ from tqdm import tqdm
 
 percent = 0.01
 
-bar = tqdm(os.listdir(sys.argv[1]))
-bar.set_description("Transforming")
-
-for f in bar:
-    if f == ".datagit":
+for f in tqdm(os.listdir(sys.argv[1]), desc="Transforming"):
+    f_dir = os.path.normpath(os.path.join(sys.argv[1], f))
+    if not os.path.isfile(f_dir):
         continue
-    f_dir = os.path.join(sys.argv[1], f)
     img = cv2.imread(f_dir)
+    if img is None:
+        continue
 
     num = int(img.shape[0] * img.shape[1] * percent)
 
@@ -26,5 +25,3 @@ for f in bar:
             img[x][y] = 255
 
     cv2.imwrite(f_dir, img)
-
-bar.close()

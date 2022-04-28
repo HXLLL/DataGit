@@ -5,14 +5,13 @@ from tqdm import tqdm
 
 scale = 0.6
 
-bar = tqdm(os.listdir(sys.argv[1]))
-bar.set_description("Transforming")
-
-for f in bar:
-    if f == ".datagit":
+for f in tqdm(os.listdir(sys.argv[1]), desc="Transforming"):
+    f_dir = os.path.normpath(os.path.join(sys.argv[1], f))
+    if not os.path.isfile(f_dir):
         continue
-    f_dir = os.path.join(sys.argv[1], f)
     img = cv2.imread(f_dir)
+    if img is None:
+        continue
 
     w = int(img.shape[1] * scale)
     h = int(img.shape[0] * scale)
@@ -20,5 +19,3 @@ for f in bar:
     new = cv2.resize(img, (w, h))
 
     cv2.imwrite(f_dir, new)
-
-bar.close()
