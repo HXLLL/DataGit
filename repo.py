@@ -49,7 +49,6 @@ class Repo:
             assert type(b).__name__ == 'str'
             self.branch_map[b] = id
 
-    # ------------------ checkout ---------------
     def __find_saved_dataSet(self, dest_version: Version) -> Tuple[Version, List[Version]]:
         """
         given a version *dest*, find the nearest saved version in *dest*'s ancestors,
@@ -93,7 +92,6 @@ class Repo:
         for m in modify_sequence:
             m.apply(working_dir)
 
-    # ------------------ save -----------------
     def save(self, VersionID: int) -> None:
         """
         save a version.
@@ -117,7 +115,6 @@ class Repo:
         storage.save_version(dest_version.id, tmp_dir)
         self.saved_version.append(VersionID)
 
-    # ------------------ unsave ---------------
     def unsave(self, VersionID: int) -> None:
         """
         unsave a version.
@@ -130,7 +127,7 @@ class Repo:
         storage.delete_version(VersionID)
         self.saved_version.remove(VersionID)
 
-    # ------------------ adjust ---------------
+    # TODO: adjust
     def find_suitable_versions(self, current_version: Version, flag: bool):
         cur_id = current_version.id
         if flag:

@@ -14,7 +14,6 @@ class Transform(Modify):
         self.__script_dir = script_dir  # 绝对
         self.__script_entry = script_entry  # 相对
         self.__script_working_dir = script_working_dir  # 相对
-        # print('传的', isMap, script_working_dir)
         self.__id: int = storage.save_transform(script_dir)
         self.__message = message
 
@@ -35,7 +34,6 @@ class Transform(Modify):
             os.chdir(save_dir)
         else:
             working_dir = os.path.join(working_dir, self.__script_working_dir)
-            # print("dbg:: ",working_dir)
             save_dir = os.getcwd()
             os.chdir(git_script_dir)
             try:

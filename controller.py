@@ -1,5 +1,5 @@
 import os
-from storage import storage
+import storage
 from repo import Repo
 from stage import Stage
 from version import Version
@@ -106,12 +106,10 @@ def commit(msg: str) -> None:
     if repo is None or stage is None:
         raise ValueError("Not in a valid repository")
 
-    # TODO: consider whether raise another kind of error/warning
     if stage.empty():
         raise ValueError("Nothing to commit")
 
     repo.commit(stage, msg)
-    # print(msg)
 
     storage.save_repo(repo)
     storage.save_stage(stage)
@@ -172,17 +170,16 @@ def unsave(obj: int) -> None:
 
 
 def adjust() -> None:
-    pass
-    # repo = storage.load_repo()
-    # stage = storage.load_stage()
+    repo = storage.load_repo()
+    stage = storage.load_stage()
 
-    # if repo is None or stage is None:
-    #     raise ValueError("Not in a valid repository")
+    if repo is None or stage is None:
+        raise ValueError("Not in a valid repository")
 
-    # repo.adjust()
+    repo.adjust()
 
-    # storage.save_repo(repo)
-    # storage.save_stage(stage)
+    storage.save_repo(repo)
+    storage.save_stage(stage)
 
 
 def log() -> str:
