@@ -3,6 +3,7 @@ import os
 import pdb
 import argparse
 import controller
+from filelock import Timeout, FileLock
 
 
 def func_init(args: argparse.Namespace) -> None:
@@ -125,23 +126,20 @@ def main():
 
     lockdir = "C:\\tmp\\lock.txt"
     try:
-        with open(lockdir, "x") as lockfile:
+        lock = FileLock(lockdir)
+        with lock:
             args.func(args)
     except (ValueError, RuntimeError) as e:
         print("Error:", e)
-        os.remove(lockdir)
         sys.exit(1)
     except KeyboardInterrupt:
         print("Terminated")
-        os.remove(lockdir)
         sys.exit(1)
     except IOError:
         print("Another datagit is running")
         sys.exit(1)
     except:
-        os.remove(lockdir)
         sys.exit(1)
-    os.remove(lockdir)
 
 if __name__ == "__main__":
     main()
