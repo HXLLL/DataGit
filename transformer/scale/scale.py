@@ -5,7 +5,10 @@ from tqdm import tqdm
 
 scale = 0.6
 
-for f in tqdm(os.listdir(sys.argv[1])):
+bar = tqdm(os.listdir(sys.argv[1]))
+bar.set_description("Transforming")
+
+for f in bar:
     if f == ".datagit":
         continue
     f_dir = os.path.join(sys.argv[1], f)
@@ -17,3 +20,5 @@ for f in tqdm(os.listdir(sys.argv[1])):
     new = cv2.resize(img, (w, h))
 
     cv2.imwrite(f_dir, new)
+
+bar.close()
