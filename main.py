@@ -1,6 +1,5 @@
 import sys
 import os
-import pdb
 import argparse
 import controller
 from filelock import Timeout, FileLock
@@ -11,7 +10,12 @@ def acquire_lock() -> FileLock:
         lockdir = "C:\\Temp"
     if not os.path.isdir(lockdir):
         os.mkdir(lockdir)
-    return FileLock(os.path.join(lockdir, "lock.txt"), timeout=1)
+    try:
+        lock = FileLock(os.path.join(lockdir, "lock.txt"), timeout=1)
+        return lock
+    except Timeout:
+        raise ValueError("Another datagit is running")
+
 
 def func_init(args: argparse.Namespace) -> None:
     controller.init()
@@ -138,15 +142,7 @@ def main():
     except KeyboardInterrupt:
         print("Terminated")
         sys.exit(1)
-    except Timeout:
-        print("Another datagit is running")
-        sys.exit(1)
 
 
 if __name__ == "__main__":
-    import cProfile
-    pr = cProfile.Profile()
-    pr.enable()
     main()
-    pr.disable()
-    pr.dump_stats("1.prof")
