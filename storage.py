@@ -1,9 +1,13 @@
 import os
 import shutil
 from directory import Directory
-from blob import Blob
 import utils
 import pickle
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from blob import Blob
+    from repo import Repo
+    from stage import Stage
 
 
 class Storage:

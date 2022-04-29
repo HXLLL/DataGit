@@ -13,7 +13,7 @@ import shutil
 class Stage():
     def __init__(self):
         self.__modify_sequence: List[Modify] = []
-        root_dirname = os.path.split(utils.get_working_dir())[1]
+        root_dirname: str = os.path.split(utils.get_working_dir())[1]
         self.__dir_tree: Directory = Directory(root_dirname)
 
     def __scan_update(self, dir: str) -> Tuple[list, list]:

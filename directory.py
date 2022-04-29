@@ -1,10 +1,10 @@
 from multiprocessing import Pool
+import multiprocessing.pool as mp
 from blob import Blob
 from typing import List, Tuple, Union, Dict
 from tqdm import tqdm
 import os
 import utils
-import threading
 
 
 class Directory:
@@ -68,11 +68,10 @@ class Directory:
         self.__files = new_dir.get_files()
         self.__dirs = new_dir.get_dirs()
 
-    def build_dict(self, working_dir: str, pbar: tqdm, p: Pool, res) -> None:
+    def build_dict(self, working_dir: str, pbar: tqdm, p: mp.Pool, res) -> None:
         '''
         获取working_dir下的子目录信息, 构造self.__dirs与self.__files
         '''
-        l = threading.Lock()
 
         for item in os.listdir(working_dir):
             abs_path = os.path.join(working_dir, item)
@@ -81,17 +80,17 @@ class Directory:
                     self.__dirs[item] = Directory(item)
             else:
                 file = Blob(item)
-
                 def error():
                     print("Error")
                     raise
-                def get_hash_callback(res, filename=item, file=file, pbar=pbar):
+                def get_hash_callback(res, filename=item, file=file):
                     file.set_hash(res)
                     pbar.update(1)
                     self.__files[filename] = file
-                res.append(p.apply_async(utils.get_hash, [os.path.join(working_dir, item)], callback=get_hash_callback, error_callback=error))
+                res.append(p.apply_async(utils.get_hash, [os.path.join(
+                    working_dir, item)], callback=get_hash_callback, error_callback=error))
 
-    def construct_rec(self, working_dir: str, pbar: tqdm, p: Pool, res) -> None:
+    def construct_rec(self, working_dir: str, pbar: tqdm, p: mp.Pool, res) -> None:
         _, self.__name = os.path.split(working_dir)
         self.build_dict(working_dir, pbar, p, res)
         # print('dirs', self.__dirs)

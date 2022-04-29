@@ -1,5 +1,8 @@
 from modify import Modify
+from typing import List, Union, Tuple
 from storage import storage
+from directory import Directory
+from blob import Blob
 import utils
 import os
 import shutil
@@ -8,14 +11,14 @@ from multiprocessing import Pool
 
 
 class Update(Modify):
-    def __init__(self, add_list: list, remove_list: list):
+    def __init__(self, add_list: List, remove_list: List):
         '''
         两个list的元素都是元组(path:str,file:Directory/Blob)
         path是从工作区的根目录开始的
         '''
         super().__init__()
-        self.__add_list = add_list
-        self.__remove_list = remove_list
+        self.__add_list: List[Tuple[str, Union[Directory, Blob]]] = add_list
+        self.__remove_list: List[Tuple[str, Union[Directory, Blob]]] = remove_list
         # 保存add_list内的文件
         files_n = 0
         for item in self.__add_list:
@@ -30,10 +33,11 @@ class Update(Modify):
                     def error():
                         print("Error")
                         raise
-                    def init_callback(res, blob=atuple[1], pbar=pbar):
+                    def init_callback(res, blob=atuple[1]):
                         pbar.update(1)
                         blob.set_hash(res)
-                    res.append(p.apply_async(storage.save_file, [atuple[0]], callback=init_callback, error_callback=error))
+                    res.append(p.apply_async(storage.save_file, [
+                               atuple[0]], callback=init_callback, error_callback=error))
             for a in res:
                 a.wait()
 
@@ -62,9 +66,10 @@ class Update(Modify):
                 def error():
                     print("Error")
                     raise
-                def move_file_callback(res, bar=bar):
+                def move_file_callback(res):
                     bar.update(1)
-                res.append(p.apply_async(shutil.copyfile, [filename, base_path], callback=move_file_callback, error_callback=error))
+                res.append(p.apply_async(shutil.copyfile, [
+                           filename, base_path], callback=move_file_callback, error_callback=error))
 
             def move_dir(base_path, adir) -> None:
                 '''
@@ -103,6 +108,6 @@ class Update(Modify):
             + '\n        '.join(map(file2str, self.__add_list[:10])) \
             + ('\n        ......' if len(self.__add_list) > 10 else '') + '\n' \
             + '    del files: \n        ' \
-            + '\n        '.join(map(file2str, self.__remove_list)) \
+            + '\n        '.join(map(file2str, self.__remove_list[:10])) \
             + ('\n        ......' if len(self.__remove_list) > 10 else '')
         return res
