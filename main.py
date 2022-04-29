@@ -6,7 +6,7 @@ import controller
 from filelock import Timeout, FileLock
 
 def acquire_lock() -> FileLock:
-    lockdir = "/tmp"
+    lockdir = "C:\\tmp"
     if not os.path.isdir(lockdir):
         lockdir = "C:\\Temp"
     if not os.path.isdir(lockdir):
