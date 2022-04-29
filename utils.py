@@ -21,7 +21,6 @@ def get_working_dir() -> str:
         get_working_dir.cache = d
         return d
     else:
-        get_working_dir.cache = None
         return None
 
 
