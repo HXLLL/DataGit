@@ -109,8 +109,7 @@ class Directory:
                 files[:] = []
             files_n += len(files)
 
-        with tqdm(total=files_n, desc="Scan directory structure") as pbar:
-            p = Pool(8)
+        with Pool(8, utils.init_worker) as p, tqdm(total=files_n, desc="Scan directory structure") as pbar:
             res = []
             self.construct_rec(working_dir, pbar, p, res)
             for v in res:

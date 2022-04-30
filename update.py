@@ -24,9 +24,8 @@ class Update(Modify):
         for item in self.__add_list:
             files_n += len(item[1].unfold(os.path.join(utils.get_working_dir(), item[0])))
 
-        with tqdm(total=files_n, desc="Copy files") as pbar:
+        with Pool(8, utils.init_worker) as p, tqdm(total=files_n, desc="Copy files") as pbar:
             res = []
-            p = Pool(8)
             for item in self.__add_list:
                 Files = item[1].unfold(os.path.join(utils.get_working_dir(), item[0]))
                 for atuple in Files:
@@ -51,8 +50,8 @@ class Update(Modify):
         # for a in self.__remove_list:
         #     print(a[0], a[1].unfold('del_test'))
 
-        with tqdm(total=sum([x[1].size() for x in self.__add_list]), desc="Apply update") as bar:
-            p = Pool(8)
+        total = sum([x[1].size() for x in self.__add_list])
+        with Pool(8, utils.init_worker) as p, tqdm(total=total, desc="Apply update") as bar:
             res = []
 
             def move_file(base_path, afile) -> None:

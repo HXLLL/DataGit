@@ -1,5 +1,6 @@
 import hashlib
 import os.path
+import signal
 
 
 def get_working_dir() -> str:
@@ -41,3 +42,7 @@ def in_working_dir(dir: str) -> bool:
     if dir != working_dir:
         return False
     return True
+
+
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
