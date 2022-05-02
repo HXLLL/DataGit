@@ -39,7 +39,6 @@ class Transform(Modify):
             try:
                 for root, adir, files in os.walk(working_dir):
                     if os.path.split(root)[1] == '.datagit':
-                        # TODO: why set adir and files to empty?
                         adir[:] = []
                         files[:] = []
                     for afile in files:
