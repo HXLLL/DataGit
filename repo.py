@@ -1,4 +1,3 @@
-from email.header import Header
 from typing import Tuple, List, Union, Dict
 from storage import storage
 from version import Version
